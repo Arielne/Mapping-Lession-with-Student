@@ -1,6 +1,6 @@
 fastapi
 uvicorn[standard]
-pymongo
+pymongo[srv]
 python-dotenv
 PyJWT
 pwdlib[argon2]
