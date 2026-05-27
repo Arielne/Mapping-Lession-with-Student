@@ -1,0 +1,28 @@
+from datetime import datetime
+from typing import Literal
+
+from pydantic import BaseModel
+
+ExtractionStatus = Literal["success", "empty_text", "failed"]
+
+
+class CourseDocumentListItem(BaseModel):
+    id: str
+    course_title: str
+    source_name: str
+    source_url_or_note: str | None = None
+    original_filename: str
+    content_type: str
+    file_size_bytes: int
+    extraction_status: ExtractionStatus
+    text_preview: str = ""
+    uploaded_by: str
+    created_at: datetime
+    updated_at: datetime
+    is_active: bool
+
+
+class CourseDocumentDetail(CourseDocumentListItem):
+    gridfs_file_id: str
+    extracted_text: str
+    normalized_text: str
