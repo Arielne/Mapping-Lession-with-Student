@@ -1,0 +1,324 @@
+:root {
+  color: #182026;
+  background: #f4f6f8;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+.topbar {
+  align-items: center;
+  background: #ffffff;
+  border-bottom: 1px solid #dce3ea;
+  display: flex;
+  gap: 20px;
+  min-height: 64px;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.brand {
+  color: #0c4a6e;
+  font-size: 20px;
+  font-weight: 750;
+}
+
+.topbar nav {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topbar nav a {
+  border-radius: 6px;
+  color: #3c4a57;
+  padding: 8px 10px;
+}
+
+.topbar nav a.active {
+  background: #e7f3f8;
+  color: #0c4a6e;
+}
+
+.page {
+  margin: 0 auto;
+  max-width: 1120px;
+  padding: 32px 24px;
+}
+
+.narrow {
+  max-width: 680px;
+}
+
+.page-head {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 32px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+p {
+  color: #65727e;
+  margin: 6px 0 0;
+}
+
+.auth-page {
+  display: grid;
+  min-height: calc(100vh - 64px);
+  place-items: center;
+  padding: 24px;
+}
+
+.auth-card,
+.panel {
+  background: #ffffff;
+  border: 1px solid #dce3ea;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.auth-card {
+  max-width: 420px;
+  width: 100%;
+}
+
+.form,
+.auth-card {
+  display: grid;
+  gap: 16px;
+}
+
+label {
+  color: #2f3b45;
+  display: grid;
+  gap: 7px;
+  font-weight: 650;
+}
+
+input,
+select {
+  background: #ffffff;
+  border: 1px solid #bfccd6;
+  border-radius: 6px;
+  min-height: 42px;
+  padding: 9px 10px;
+}
+
+.primary,
+.ghost,
+.button-link {
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 12px;
+}
+
+.primary {
+  background: #0c4a6e;
+  border: 1px solid #0c4a6e;
+  color: #ffffff;
+}
+
+.primary:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.ghost,
+.button-link {
+  background: #ffffff;
+  border: 1px solid #bfccd6;
+  color: #24313b;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.tile {
+  background: #ffffff;
+  border: 1px solid #dce3ea;
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  min-height: 132px;
+  padding: 20px;
+}
+
+.tile strong {
+  font-size: 19px;
+}
+
+.tile span {
+  color: #65727e;
+}
+
+.list {
+  display: grid;
+  gap: 12px;
+}
+
+.row {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #dce3ea;
+  border-radius: 8px;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 16px;
+}
+
+.actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.chips span {
+  background: #ecf6f0;
+  border: 1px solid #c9e7d5;
+  border-radius: 999px;
+  color: #17613a;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+
+.status {
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 9px;
+}
+
+.status.uploaded,
+.status.processing {
+  background: #fff3d6;
+  color: #7a4d00;
+}
+
+.status.processed {
+  background: #ddf7e7;
+  color: #14532d;
+}
+
+.status.failed {
+  background: #ffe4e6;
+  color: #9f1239;
+}
+
+.metrics {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 18px;
+}
+
+.metrics div {
+  background: #ffffff;
+  border: 1px solid #dce3ea;
+  border-radius: 8px;
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+}
+
+.metrics span {
+  color: #65727e;
+}
+
+.metrics strong {
+  font-size: 28px;
+}
+
+.check {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.check input {
+  min-height: auto;
+}
+
+.error {
+  background: #ffe4e6;
+  border: 1px solid #fecdd3;
+  border-radius: 6px;
+  color: #9f1239;
+  padding: 10px;
+}
+
+.success {
+  background: #ddf7e7;
+  border: 1px solid #bbebcb;
+  border-radius: 6px;
+  color: #14532d;
+  padding: 10px;
+}
+
+.muted {
+  color: #65727e;
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px;
+  }
+
+  .topbar nav {
+    width: 100%;
+  }
+
+  .row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
+}
+
