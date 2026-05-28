@@ -34,8 +34,15 @@ app = FastAPI(
 )
 
 allowed_origins = ["http://localhost:5173"]
-if settings.frontend_url and settings.frontend_url not in allowed_origins:
+if settings.frontend_url:
     allowed_origins.append(settings.frontend_url)
+if settings.allowed_origins:
+    allowed_origins.extend(
+        origin.strip()
+        for origin in settings.allowed_origins.split(",")
+        if origin.strip()
+    )
+allowed_origins = list(dict.fromkeys(allowed_origins))
 
 app.add_middleware(
     CORSMiddleware,

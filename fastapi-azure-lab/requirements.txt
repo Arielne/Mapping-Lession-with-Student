@@ -1,5 +1,6 @@
 fastapi
 uvicorn[standard]
+gunicorn
 pymongo[srv]
 python-dotenv
 PyJWT
@@ -9,3 +10,5 @@ python-multipart
 pypdf
 python-docx
 scikit-learn
+numpy
+pydantic
