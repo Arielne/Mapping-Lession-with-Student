@@ -41,7 +41,7 @@ def serialize_document(document: dict | None) -> dict | None:
     if "results" in item and isinstance(item["results"], list):
         for result in item["results"]:
             if isinstance(result, dict):
-                for key in ("course_document_id",):
+                for key in ("course_id", "course_document_id", "source_course_document_id"):
                     if key in result and isinstance(result[key], ObjectId):
                         result[key] = str(result[key])
     return item

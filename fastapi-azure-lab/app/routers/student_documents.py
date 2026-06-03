@@ -6,7 +6,7 @@ from app.schemas.student_document import DocumentPurpose, StudentDocumentDetail,
 from app.services.file_validation_service import validate_upload
 from app.services.gridfs_storage_service import read_file_from_gridfs, save_file_to_gridfs
 from app.services.text_extraction_service import extract_text
-from app.services.text_normalization_service import normalize_text, preview_text
+from app.services.text_normalization_service import extract_skills, normalize_text, preview_text
 from app.utils import now_utc, serialize_document, to_object_id
 
 router = APIRouter(prefix="/student/documents", tags=["Student Documents"])
@@ -53,6 +53,7 @@ async def upload_student_document(
     )
     extracted_text, extraction_error = extract_text(file.filename or "", content)
     normalized_text = normalize_text(extracted_text)
+    extracted_skills = extract_skills(normalized_text)
     if extraction_error:
         extraction_status = "failed"
     elif normalized_text:
@@ -70,6 +71,7 @@ async def upload_student_document(
         "file_size_bytes": len(content),
         "extracted_text": extracted_text,
         "normalized_text": normalized_text,
+        "extracted_skills": extracted_skills,
         "extraction_status": extraction_status,
         "extraction_error": extraction_error,
         "consent_confirmed": consent_confirmed,

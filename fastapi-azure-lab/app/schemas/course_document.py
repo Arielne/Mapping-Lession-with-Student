@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel
+from pydantic import Field
 
 ExtractionStatus = Literal["success", "empty_text", "failed"]
 
@@ -15,6 +16,7 @@ class CourseDocumentListItem(BaseModel):
     content_type: str
     file_size_bytes: int
     extraction_status: ExtractionStatus
+    extracted_skills: list[str] = Field(default_factory=list)
     text_preview: str = ""
     uploaded_by: str
     created_at: datetime

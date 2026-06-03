@@ -21,7 +21,7 @@ export default function RegisterPage() {
     try {
       await register(form);
       await login(form.email, form.password);
-      navigate("/courses");
+      navigate("/student/documents");
     } catch (err) {
       setError(getApiError(err));
     } finally {

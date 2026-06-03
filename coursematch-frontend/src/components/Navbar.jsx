@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  const isStudent = user?.role === "student";
+  const isStudent = user?.role === "user" || user?.role === "student";
   const isAdmin = user?.role === "admin";
 
   return (
@@ -12,8 +12,8 @@ export default function Navbar() {
         CourseMatch
       </Link>
       <nav className="nav-links">
-        {isStudent && <NavLink to="/student/documents/upload">Upload tài liệu</NavLink>}
-        {isStudent && <NavLink to="/student/documents">Tài liệu của tôi</NavLink>}
+        {isStudent && <NavLink to="/student/documents/upload">Upload CV / Nhu cầu</NavLink>}
+        {isStudent && <NavLink to="/student/documents">Hồ sơ của tôi</NavLink>}
         {isAdmin && <NavLink to="/admin/course-documents">Tài liệu khóa học</NavLink>}
         {isAdmin && <NavLink to="/admin/evaluation">Đánh giá</NavLink>}
       </nav>

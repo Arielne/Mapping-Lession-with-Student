@@ -33,7 +33,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-allowed_origins = ["http://localhost:5173"]
+allowed_origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
 if settings.frontend_url:
     allowed_origins.append(settings.frontend_url)
 if settings.allowed_origins:

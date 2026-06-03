@@ -40,6 +40,6 @@ async def require_admin(current_user=Depends(get_current_user)):
 
 
 async def require_student(current_user=Depends(get_current_user)):
-    if current_user.get("role") != "student":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Chi student moi duoc thuc hien.")
+    if current_user.get("role") not in {"user", "student"}:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Chi user/hoc vien moi duoc thuc hien.")
     return current_user

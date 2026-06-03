@@ -40,7 +40,7 @@ class UserResponse(BaseModel):
     id: str
     full_name: str
     email: str
-    role: Literal["student", "admin"]
+    role: Literal["user", "student", "admin"]
     created_at: datetime
 
 

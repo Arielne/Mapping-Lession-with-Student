@@ -34,6 +34,10 @@ export default function AdminCourseDocumentsPage() {
     event.preventDefault();
     setError("");
     setMessage("");
+    if (!form.file || !/\.(pdf|docx)$/i.test(form.file.name)) {
+      setError("Chỉ chấp nhận file PDF hoặc DOCX.");
+      return;
+    }
     const data = new FormData();
     data.append("course_title", form.course_title);
     data.append("source_name", form.source_name);
@@ -92,21 +96,30 @@ export default function AdminCourseDocumentsPage() {
     }
   }
 
+  function renderSkills(skills) {
+    if (!skills?.length) return <span className="muted">No skills detected</span>;
+    return (
+      <div className="tags compact-tags">
+        {skills.slice(0, 8).map((skill) => <span key={skill}>{skill}</span>)}
+      </div>
+    );
+  }
+
   return (
     <main className="page admin-layout">
       <section className="panel">
         <h1>Upload tài liệu khóa học</h1>
         <form className="form" onSubmit={handleSubmit}>
           <label>
-            Course title
+            Tên khóa học
             <input value={form.course_title} onChange={(event) => updateField("course_title", event.target.value)} required />
           </label>
           <label>
-            Source name
+            Nguồn tài liệu
             <input value={form.source_name} onChange={(event) => updateField("source_name", event.target.value)} required />
           </label>
           <label>
-            Source note optional
+            Ghi chú nguồn nếu có
             <input value={form.source_url_or_note} onChange={(event) => updateField("source_url_or_note", event.target.value)} />
           </label>
           <label>
@@ -115,7 +128,7 @@ export default function AdminCourseDocumentsPage() {
           </label>
           {error && <p className="error">{error}</p>}
           {message && <p className="success">{message}</p>}
-          <button className="button" type="submit">Upload</button>
+          <button className="button" type="submit">Upload tài liệu khóa học</button>
         </form>
       </section>
       <section>
@@ -133,6 +146,7 @@ export default function AdminCourseDocumentsPage() {
                   <th>Course</th>
                   <th>File</th>
                   <th>Status</th>
+                  <th>Skills</th>
                   <th>Uploaded</th>
                   <th></th>
                 </tr>
@@ -143,6 +157,7 @@ export default function AdminCourseDocumentsPage() {
                     <td>{doc.course_title}</td>
                     <td>{doc.original_filename}</td>
                     <td>{doc.extraction_status}</td>
+                    <td>{renderSkills(doc.extracted_skills)}</td>
                     <td>{new Date(doc.created_at).toLocaleString()}</td>
                     <td className="table-actions">
                       <button className="button ghost" type="button" onClick={() => loadDetail(doc.id)}>Chi tiết</button>
@@ -160,6 +175,10 @@ export default function AdminCourseDocumentsPage() {
             <h2>{selected.course_title}</h2>
             <p><strong>Nguồn:</strong> {selected.source_name}</p>
             <p><strong>Status:</strong> {selected.extraction_status}</p>
+            <div className="detail-skills">
+              <strong>Extracted skills:</strong>
+              {renderSkills(selected.extracted_skills)}
+            </div>
             <pre>{selected.extracted_text || "Không có text trích xuất."}</pre>
           </section>
         )}

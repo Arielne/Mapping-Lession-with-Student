@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Literal
 
 from pydantic import BaseModel
+from pydantic import Field
 
 from app.schemas.course_document import ExtractionStatus
 
@@ -17,6 +18,7 @@ class StudentDocumentListItem(BaseModel):
     content_type: str
     file_size_bytes: int
     extraction_status: ExtractionStatus
+    extracted_skills: list[str] = Field(default_factory=list)
     consent_confirmed: bool
     ground_truth_course_id: str | None = None
     text_preview: str = ""

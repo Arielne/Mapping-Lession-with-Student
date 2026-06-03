@@ -19,7 +19,7 @@ async def register(payload: UserRegister, db=Depends(require_database)):
         "full_name": payload.full_name,
         "email": payload.email.lower(),
         "password_hash": hash_password(payload.password),
-        "role": "student",
+        "role": "user",
         "created_at": now_utc(),
     }
     try:

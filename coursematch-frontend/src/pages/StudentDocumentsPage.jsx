@@ -40,14 +40,20 @@ export default function StudentDocumentsPage() {
     }
   }
 
+  function formatPurpose(value) {
+    if (value === "anonymized_cv") return "CV đã ẩn thông tin nhạy cảm";
+    if (value === "learning_need") return "Nhu cầu học tập";
+    return value;
+  }
+
   return (
     <main className="page">
       <div className="page-heading">
         <div>
-          <p className="eyebrow">Student</p>
-          <h1>Tài liệu của tôi</h1>
+          <p className="eyebrow">Học viên</p>
+          <h1>CV / Hồ sơ nhu cầu của tôi</h1>
         </div>
-        <Link className="button" to="/student/documents/upload">Upload mới</Link>
+        <Link className="button" to="/student/documents/upload">Upload CV / Nhu cầu</Link>
       </div>
       {error && <p className="error">{error}</p>}
       {loading ? <p>Đang tải...</p> : (
@@ -55,8 +61,8 @@ export default function StudentDocumentsPage() {
           <table>
             <thead>
               <tr>
-                <th>Alias</th>
-                <th>Purpose</th>
+                <th>Mã học viên</th>
+                <th>Loại hồ sơ</th>
                 <th>File</th>
                 <th>Status</th>
                 <th></th>
@@ -66,11 +72,11 @@ export default function StudentDocumentsPage() {
               {documents.map((doc) => (
                 <tr key={doc.id}>
                   <td>{doc.student_alias}</td>
-                  <td>{doc.document_purpose}</td>
+                  <td>{formatPurpose(doc.document_purpose)}</td>
                   <td>{doc.original_filename}</td>
                   <td>{doc.extraction_status}</td>
                   <td className="table-actions">
-                    <Link className="button" to={`/student/documents/${doc.id}/matches`}>Matching</Link>
+                    <Link className="button" to={`/student/documents/${doc.id}/matches`}>Xem gợi ý</Link>
                     <button className="button secondary" type="button" onClick={() => downloadFile(doc)}>Download</button>
                   </td>
                 </tr>

@@ -19,7 +19,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route element={<ProtectedRoute role="student" />}>
+        <Route element={<ProtectedRoute role="user" />}>
           <Route path="/student/documents/upload" element={<StudentUploadPage />} />
           <Route path="/student/documents" element={<StudentDocumentsPage />} />
           <Route path="/student/documents/:id/matches" element={<MatchResultsPage />} />

@@ -9,14 +9,14 @@ export default function HomePage() {
       <section className="hero">
         <div>
           <p className="eyebrow">CourseMatch</p>
-          <h1>Hệ thống đối sánh tài liệu khóa học và nhu cầu học viên</h1>
+          <h1>Gợi ý khóa học phù hợp từ CV và nhu cầu học tập</h1>
           <p className="hero-copy">
-            CourseMatch xử lý file PDF/DOCX thật, trích xuất nội dung thành JSON và matching bằng vector nhị phân.
+            CourseMatch đọc CV hoặc hồ sơ nhu cầu học tập dạng PDF/DOCX, phân tích năng lực và mục tiêu của học viên để xếp hạng các khóa học phù hợp nhất.
           </p>
           <div className="hero-actions">
-            {user?.role === "student" && (
+            {(user?.role === "user" || user?.role === "student") && (
               <Link className="button" to="/student/documents/upload">
-                Upload tài liệu
+                Upload CV / Nhu cầu học tập
               </Link>
             )}
             {user?.role === "admin" && (
@@ -35,15 +35,15 @@ export default function HomePage() {
       <section className="feature-grid">
         <div>
           <h2>Cho học viên</h2>
-          <p>Upload CV ẩn danh hoặc mô tả nhu cầu học tập bằng PDF/DOCX.</p>
+          <p>Upload CV ẩn danh hoặc hồ sơ mô tả kỹ năng hiện tại, mục tiêu nghề nghiệp và nội dung muốn học thêm.</p>
         </div>
         <div>
           <h2>Cho admin</h2>
-          <p>Upload tài liệu khóa học thật, quản lý file gốc và nhãn ground truth.</p>
+          <p>Upload tài liệu khóa học thật có mục tiêu, nội dung học, kỹ năng đầu ra, đối tượng phù hợp và điều kiện đầu vào.</p>
         </div>
         <div>
-          <h2>Matching minh bạch</h2>
-          <p>Biểu diễn văn bản bằng vector 0/1 và tính Jaccard similarity.</p>
+          <h2>Gợi ý minh bạch</h2>
+          <p>Hiển thị mức độ phù hợp, lý do gợi ý và các kỹ năng/nội dung liên quan được phát hiện từ hồ sơ học viên.</p>
         </div>
       </section>
     </main>

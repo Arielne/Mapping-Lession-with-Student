@@ -9,6 +9,8 @@ email-validator
 python-multipart
 pypdf
 python-docx
+PyMuPDF
+docx2txt
 scikit-learn
 numpy
 pydantic
