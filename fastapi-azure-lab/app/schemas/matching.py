@@ -11,6 +11,7 @@ class MatchItem(BaseModel):
     course_title: str
     score: float
     match_score: float
+    similarity_score: float
     matched_keywords: list[str] = Field(default_factory=list)
     missing_keywords: list[str] = Field(default_factory=list)
     explanation: str
@@ -21,6 +22,9 @@ class MatchItem(BaseModel):
     suggested_learning_outcomes: list[str] = Field(default_factory=list)
     score_breakdown: dict[str, float] = Field(default_factory=dict)
     algorithm_name: str
+    algorithm: str
+    is_recommended: bool
+    created_at: datetime
     explanation_algorithm_name: str | None = None
     baseline_algorithm_name: str | None = None
     student_active_terms: int

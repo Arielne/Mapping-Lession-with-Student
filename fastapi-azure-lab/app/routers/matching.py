@@ -15,6 +15,7 @@ def ensure_match_item_fields(result: dict) -> dict:
         item.setdefault("course_id", item.get("course_document_id"))
         item.setdefault("source_course_document_id", item.get("course_document_id"))
         item.setdefault("match_score", item.get("score", 0.0))
+        item.setdefault("similarity_score", item.get("score", item.get("match_score", 0.0)))
         item.setdefault("matched_keywords", item.get("relevant_skills", item.get("matched_terms", []))[:12])
         item.setdefault("missing_keywords", item.get("missing_or_recommended_skills", []))
         item.setdefault("explanation", item.get("recommendation_reason", "No explanation is available for this saved result."))
@@ -32,6 +33,9 @@ def ensure_match_item_fields(result: dict) -> dict:
             },
         )
         item.setdefault("algorithm_name", result.get("algorithm_name", "binary_jaccard_ngram_v1"))
+        item.setdefault("algorithm", item.get("algorithm_name", result.get("algorithm_name", "binary_jaccard_ngram_v1")))
+        item.setdefault("is_recommended", item.get("similarity_score", item.get("score", 0.0)) > 0)
+        item.setdefault("created_at", result.get("generated_at", now_utc()))
         item.setdefault("explanation_algorithm_name", "keyword_overlap_v1")
         item.setdefault("baseline_algorithm_name", None)
         item.setdefault("student_active_terms", 0)

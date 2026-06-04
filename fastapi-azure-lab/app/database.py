@@ -1,3 +1,4 @@
+import certifi
 from pymongo import ASCENDING, AsyncMongoClient
 from pymongo.errors import PyMongoError
 
@@ -24,7 +25,12 @@ async def connect_to_mongo() -> None:
         return
 
     try:
-        client = AsyncMongoClient(settings.mongodb_url, serverSelectionTimeoutMS=5000)
+        client = AsyncMongoClient(
+            settings.mongodb_url,
+            tls=True,
+            tlsCAFile=certifi.where(),
+            serverSelectionTimeoutMS=5000,
+        )
         db = client[settings.mongodb_db_name]
         await client.admin.command("ping")
         await create_indexes()

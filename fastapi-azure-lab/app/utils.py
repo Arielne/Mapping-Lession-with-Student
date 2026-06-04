@@ -38,8 +38,10 @@ def serialize_document(document: dict | None) -> dict | None:
     ):
         if key in item and isinstance(item[key], ObjectId):
             item[key] = str(item[key])
-    if "results" in item and isinstance(item["results"], list):
-        for result in item["results"]:
+    for nested_results_key in ("results", "recommendations"):
+        if nested_results_key not in item or not isinstance(item[nested_results_key], list):
+            continue
+        for result in item[nested_results_key]:
             if isinstance(result, dict):
                 for key in ("course_id", "course_document_id", "source_course_document_id"):
                     if key in result and isinstance(result[key], ObjectId):

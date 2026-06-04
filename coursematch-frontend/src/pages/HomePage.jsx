@@ -9,24 +9,25 @@ export default function HomePage() {
       <section className="hero">
         <div>
           <p className="eyebrow">CourseMatch</p>
-          <h1>Gợi ý khóa học phù hợp từ CV và nhu cầu học tập</h1>
+          <h1>Goi y khoa hoc tu tai lieu PDF/DOCX that</h1>
           <p className="hero-copy">
-            CourseMatch đọc CV hoặc hồ sơ nhu cầu học tập dạng PDF/DOCX, phân tích năng lực và mục tiêu của học viên để xếp hạng các khóa học phù hợp nhất.
+            CourseMatch luu file goc bang MongoDB GridFS, trich xuat text tu CV hoac ho so nhu cau hoc tap,
+            sau do doi sanh voi tai lieu khoa hoc bang binary Jaccard n-gram de xep hang cac khoa hoc phu hop.
           </p>
           <div className="hero-actions">
             {(user?.role === "user" || user?.role === "student") && (
               <Link className="button" to="/student/documents/upload">
-                Upload CV / Nhu cầu học tập
+                Upload CV / Nhu cau hoc tap
               </Link>
             )}
             {user?.role === "admin" && (
               <Link className="button" to="/admin/course-documents">
-                Quản lý tài liệu khóa học
+                Quan ly tai lieu khoa hoc
               </Link>
             )}
             {!user && (
               <Link className="button secondary" to="/register">
-                Bắt đầu
+                Bat dau
               </Link>
             )}
           </div>
@@ -34,16 +35,16 @@ export default function HomePage() {
       </section>
       <section className="feature-grid">
         <div>
-          <h2>Cho học viên</h2>
-          <p>Upload CV ẩn danh hoặc hồ sơ mô tả kỹ năng hiện tại, mục tiêu nghề nghiệp và nội dung muốn học thêm.</p>
+          <h2>Hoc vien</h2>
+          <p>Upload CV hoac tai lieu nhu cau hoc tap dang PDF/DOCX. He thong chi dung text trich xuat tu file that de matching.</p>
         </div>
         <div>
-          <h2>Cho admin</h2>
-          <p>Upload tài liệu khóa học thật có mục tiêu, nội dung học, kỹ năng đầu ra, đối tượng phù hợp và điều kiện đầu vào.</p>
+          <h2>Admin</h2>
+          <p>Upload tai lieu khoa hoc dang PDF/DOCX. File binary duoc luu trong GridFS, document thuong chi luu metadata va text.</p>
         </div>
         <div>
-          <h2>Gợi ý minh bạch</h2>
-          <p>Hiển thị mức độ phù hợp, lý do gợi ý và các kỹ năng/nội dung liên quan được phát hiện từ hồ sơ học viên.</p>
+          <h2>Matching minh bach</h2>
+          <p>Ket qua gom diem tuong dong, thuat toan, trang thai goi y va ly do duoc giai thich bang keyword overlap.</p>
         </div>
       </section>
     </main>

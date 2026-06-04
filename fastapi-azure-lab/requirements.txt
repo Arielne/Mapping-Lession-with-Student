@@ -2,6 +2,7 @@ fastapi
 uvicorn[standard]
 gunicorn
 pymongo[srv]
+certifi
 python-dotenv
 PyJWT
 pwdlib[argon2]

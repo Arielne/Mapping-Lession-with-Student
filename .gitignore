@@ -11,5 +11,9 @@ dist/
 build/
 *.zip
 *.log
+*.reg
 frontend_server.*.log
 vite*.log
+appservice-logs*/
+fastapi-azure-lab/_deploy_staging/
+fastapi-azure-lab/app/frontend_dist/

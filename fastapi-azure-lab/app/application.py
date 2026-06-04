@@ -1,7 +1,10 @@
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
 from app.database import close_mongo_connection, connect_to_mongo, get_database_status
@@ -61,7 +64,26 @@ app.include_router(matching.router)
 app.include_router(evaluation.router)
 
 # Legacy form-based routes kept only for old technical tests.
-app.include_router(courses.router)
-app.include_router(learning_needs.router)
-app.include_router(recommendations.router)
-app.include_router(registrations.router)
+app.include_router(courses.router, include_in_schema=False)
+app.include_router(learning_needs.router, include_in_schema=False)
+app.include_router(recommendations.router, include_in_schema=False)
+app.include_router(registrations.router, include_in_schema=False)
+
+
+frontend_dist = Path(__file__).resolve().parent / "frontend_dist"
+frontend_assets = frontend_dist / "assets"
+frontend_index = frontend_dist / "index.html"
+
+if frontend_assets.exists():
+    app.mount("/assets", StaticFiles(directory=frontend_assets), name="frontend-assets")
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+async def serve_frontend(full_path: str):
+    if frontend_index.exists():
+        return FileResponse(frontend_index)
+    return {
+        "app": settings.app_name,
+        "status": "Online",
+        "workflow": "document_upload_binary_gridfs_matching",
+    }
