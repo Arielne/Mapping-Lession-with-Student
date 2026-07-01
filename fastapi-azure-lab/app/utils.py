@@ -33,6 +33,7 @@ def serialize_document(document: dict | None) -> dict | None:
         "uploaded_by",
         "gridfs_file_id",
         "student_document_id",
+        "source_student_document_id",
         "course_document_id",
         "ground_truth_course_id",
     ):

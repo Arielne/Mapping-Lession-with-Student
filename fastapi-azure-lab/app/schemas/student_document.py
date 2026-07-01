@@ -6,7 +6,16 @@ from pydantic import Field
 
 from app.schemas.course_document import ExtractionStatus
 
-DocumentPurpose = Literal["learning_need", "anonymized_cv"]
+DocumentPurpose = Literal["learning_need", "anonymized_cv", "profile_text"]
+
+
+class StudentProfileTextCreate(BaseModel):
+    student_alias: str
+    current_skills: str = ""
+    interests: str = ""
+    career_goals: str = ""
+    learning_preferences: str = ""
+    consent_confirmed: bool
 
 
 class StudentDocumentListItem(BaseModel):

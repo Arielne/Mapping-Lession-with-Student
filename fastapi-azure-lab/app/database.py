@@ -68,6 +68,11 @@ async def create_indexes() -> None:
     await db.student_documents.create_index([("user_id", ASCENDING)])
     await db.student_documents.create_index([("is_active", ASCENDING)])
     await db.match_results.create_index([("student_document_id", ASCENDING)], unique=True)
+    await db.favorite_course_documents.create_index(
+        [("user_id", ASCENDING), ("course_document_id", ASCENDING)],
+        unique=True,
+    )
+    await db.favorite_course_documents.create_index([("saved_at", ASCENDING)])
 
     # Legacy technical-test index. These routes are no longer used for official matching.
     await db.registrations.create_index(

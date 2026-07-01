@@ -28,25 +28,31 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="page narrow">
-      <section className="panel">
-        <h1>Đăng nhập</h1>
-        <form onSubmit={handleSubmit} className="form">
+    <main className="auth-page">
+      <section className="auth-card">
+        <div className="auth-intro">
+          <p className="eyebrow">CourseMatch</p>
+          <h1>Dang nhap</h1>
+          <p>Vao he thong de tim, luu va xem lai nhung mon hoc phu hop voi ban.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="form auth-form">
           <label>
             Email
-            <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" required />
+            <input value={email} onChange={(event) => setEmail(event.target.value)} type="email" autoComplete="email" required />
           </label>
           <label>
-            Password
-            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" required />
+            Mat khau
+            <input value={password} onChange={(event) => setPassword(event.target.value)} type="password" autoComplete="current-password" required />
           </label>
           {error && <p className="error">{error}</p>}
-          <button className="button" type="submit" disabled={submitting}>
-            {submitting ? "Đang đăng nhập..." : "Đăng nhập"}
+          <button className="button auth-submit" type="submit" disabled={submitting}>
+            {submitting ? "Dang dang nhap..." : "Dang nhap"}
           </button>
         </form>
-        <p className="muted-text">
-          Chưa có tài khoản? <Link to="/register">Đăng ký student</Link>
+
+        <p className="auth-note">
+          Chua co tai khoan? <Link to="/register">Tao tai khoan sinh vien</Link>
         </p>
       </section>
     </main>

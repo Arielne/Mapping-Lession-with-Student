@@ -12,6 +12,7 @@ class MatchItem(BaseModel):
     score: float
     match_score: float
     similarity_score: float
+    course_summary: str = ""
     matched_keywords: list[str] = Field(default_factory=list)
     missing_keywords: list[str] = Field(default_factory=list)
     explanation: str

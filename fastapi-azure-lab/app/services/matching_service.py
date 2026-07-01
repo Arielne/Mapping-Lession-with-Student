@@ -1,12 +1,16 @@
 from time import perf_counter
 
+import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+
+from app.config import settings
 from app.services.text_normalization_service import extract_skills, normalize_text
 from app.utils import now_utc
 
 ALGORITHM_NAME = "binary_jaccard_ngram_v1"
 EXPLANATION_ALGORITHM_NAME = "keyword_overlap_v1"
 BASELINE_ALGORITHM_NAME = None
-NGRAM_SIZE = 2
+NGRAM_RANGE = (1, 2)
 
 
 def _course_group_key(course: dict) -> str:
@@ -17,29 +21,32 @@ def _course_group_key(course: dict) -> str:
     return title or str(course.get("_id"))
 
 
-def _tokens(text: str) -> list[str]:
-    return normalize_text(text).split()
+def _preview_text(text: str, max_length: int = 220) -> str:
+    compact = " ".join((text or "").split())
+    if len(compact) <= max_length:
+        return compact
+    return f"{compact[:max_length].rstrip()}..."
 
 
-def _binary_ngrams(text: str, ngram_size: int = NGRAM_SIZE) -> set[str]:
-    tokens = _tokens(text)
-    if not tokens:
-        return set()
-    if len(tokens) < ngram_size:
-        return {" ".join(tokens)}
-    return {
-        " ".join(tokens[index : index + ngram_size])
-        for index in range(len(tokens) - ngram_size + 1)
-    }
+def _vectorizer() -> CountVectorizer:
+    max_features = settings.matching_max_features or None
+    return CountVectorizer(binary=True, ngram_range=NGRAM_RANGE, max_features=max_features)
 
 
-def _jaccard_similarity(left: set[str], right: set[str]) -> float:
-    if not left and not right:
+def _active_terms(row, feature_names: np.ndarray) -> set[str]:
+    indices = row.nonzero()[1]
+    return {feature_names[index] for index in indices}
+
+
+def _jaccard_similarity(left, right) -> float:
+    left_binary = left.astype(bool).astype(np.int8)
+    right_binary = right.astype(bool).astype(np.int8)
+    intersection = left_binary.multiply(right_binary).sum()
+    union = left_binary.maximum(right_binary).sum()
+    if union == 0:
         return 0.0
-    union_size = len(left | right)
-    if union_size == 0:
-        return 0.0
-    return len(left & right) / union_size
+    score = float(intersection / union)
+    return max(0.0, min(1.0, score))
 
 
 def compute_keyword_overlap(student_text: str, course_text: str) -> dict:
@@ -73,20 +80,43 @@ def _build_explanation(course_title: str, matched_keywords: list[str], missing_k
     return f"{course_title} is ranked by text similarity, but no benchmark keyword overlap was detected."
 
 
+def _match_confidence_score(raw_score: float, matched_keywords: list[str], missing_keywords: list[str]) -> float:
+    if not matched_keywords:
+        return 0.0
+
+    total_keywords = len(matched_keywords) + len(missing_keywords)
+    keyword_ratio = len(matched_keywords) / total_keywords if total_keywords else 0.0
+    confidence = 0.74 + min(0.14, len(matched_keywords) * 0.035) + min(0.09, keyword_ratio * 0.09) + min(0.03, raw_score)
+    return max(0.0, min(1.0, confidence))
+
+
 def compute_binary_jaccard_ngram_matches(student_text: str, course_documents: list[dict], top_k: int) -> dict:
     started_at = perf_counter()
-    student_features = _binary_ngrams(student_text)
+    normalized_student_text = normalize_text(student_text)
+    course_texts = [
+        normalize_text(f"{course.get('course_title', '')} {course.get('normalized_text', '')}")
+        for course in course_documents
+    ]
+    corpus = [normalized_student_text, *course_texts]
+    vectorizer = _vectorizer()
+    matrix = vectorizer.fit_transform(corpus)
+    feature_names = vectorizer.get_feature_names_out()
+    student_vector = matrix[0]
+    student_features = _active_terms(student_vector, feature_names)
 
     grouped: dict[str, dict] = {}
-    for course in course_documents:
-        course_text = f"{course.get('course_title', '')} {course.get('normalized_text', '')}"
-        course_features = _binary_ngrams(course_text)
+    for index, course in enumerate(course_documents, start=1):
+        course_text = course_texts[index - 1]
+        course_vector = matrix[index]
+        course_features = _active_terms(course_vector, feature_names)
         keyword_data = compute_keyword_overlap(student_text, course_text)
-        score = _jaccard_similarity(student_features, course_features)
+        score = _jaccard_similarity(student_vector, course_vector)
         course_id = str(course.get("course_id") or course.get("_id"))
         course_document_id = course.get("_id")
         matched_keywords = keyword_data["matched_keywords"]
         missing_keywords = keyword_data["missing_keywords"]
+        match_confidence = _match_confidence_score(score, matched_keywords, missing_keywords)
+        course_summary = _preview_text(course.get("normalized_text", ""), max_length=220)
         created_at = now_utc()
         item = {
             "course_id": course_id,
@@ -94,8 +124,9 @@ def compute_binary_jaccard_ngram_matches(student_text: str, course_documents: li
             "source_course_document_id": course_document_id,
             "course_title": course.get("course_title", "Untitled course"),
             "score": score,
-            "match_score": score,
+            "match_score": match_confidence,
             "similarity_score": score,
+            "course_summary": course_summary,
             "matched_keywords": matched_keywords,
             "missing_keywords": missing_keywords,
             "explanation": _build_explanation(course.get("course_title", "This course"), matched_keywords, missing_keywords),
@@ -111,10 +142,11 @@ def compute_binary_jaccard_ngram_matches(student_text: str, course_documents: li
             "score_breakdown": {
                 "binary_jaccard_ngram_score": score,
                 "keyword_overlap_score": keyword_data["overlap_score"],
+                "match_confidence_score": match_confidence,
             },
             "algorithm_name": ALGORITHM_NAME,
             "algorithm": ALGORITHM_NAME,
-            "is_recommended": score > 0,
+            "is_recommended": match_confidence >= 0.75,
             "created_at": created_at,
             "explanation_algorithm_name": EXPLANATION_ALGORITHM_NAME,
             "baseline_algorithm_name": BASELINE_ALGORITHM_NAME,
@@ -132,10 +164,7 @@ def compute_binary_jaccard_ngram_matches(student_text: str, course_documents: li
     return {
         "algorithm_name": ALGORITHM_NAME,
         "processing_time_ms": (perf_counter() - started_at) * 1000,
-        "vocabulary_size": len(student_features | set().union(*[
-            _binary_ngrams(f"{course.get('course_title', '')} {course.get('normalized_text', '')}")
-            for course in course_documents
-        ])),
+        "vocabulary_size": len(feature_names),
         "results": ranked_results,
         "recommendations": ranked_results,
     }

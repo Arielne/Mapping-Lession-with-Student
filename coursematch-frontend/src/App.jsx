@@ -10,6 +10,7 @@ import StudentUploadPage from "./pages/StudentUploadPage";
 import StudentDocumentsPage from "./pages/StudentDocumentsPage";
 import MatchResultsPage from "./pages/MatchResultsPage";
 import AdminEvaluationPage from "./pages/AdminEvaluationPage";
+import FavoritesPage from "./pages/FavoritesPage";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/student/documents/upload" element={<StudentUploadPage />} />
           <Route path="/student/documents" element={<StudentDocumentsPage />} />
           <Route path="/student/documents/:id/matches" element={<MatchResultsPage />} />
+          <Route path="/student/favorites" element={<FavoritesPage />} />
         </Route>
         <Route element={<AdminRoute />}>
           <Route path="/admin/course-documents" element={<AdminCourseDocumentsPage />} />

@@ -12,26 +12,27 @@ export default function Navbar() {
         CourseMatch
       </Link>
       <nav className="nav-links">
-        {isStudent && <NavLink to="/student/documents/upload">Upload CV / Nhu cầu</NavLink>}
-        {isStudent && <NavLink to="/student/documents">Hồ sơ của tôi</NavLink>}
-        {isAdmin && <NavLink to="/admin/course-documents">Tài liệu khóa học</NavLink>}
-        {isAdmin && <NavLink to="/admin/evaluation">Đánh giá</NavLink>}
+        {isStudent && <NavLink to="/student/documents/upload">Upload CV / Nhu cau</NavLink>}
+        {isStudent && <NavLink to="/student/documents">Ho so cua toi</NavLink>}
+        {isStudent && <NavLink to="/student/favorites">Yeu thich</NavLink>}
+        {isAdmin && <NavLink to="/admin/course-documents">Tai lieu khoa hoc</NavLink>}
+        {isAdmin && <NavLink to="/admin/evaluation">Danh gia</NavLink>}
       </nav>
       <div className="nav-actions">
         {user ? (
           <>
             <span className="user-pill">{user.full_name}</span>
             <button type="button" className="button ghost" onClick={logout}>
-              Đăng xuất
+              Dang xuat
             </button>
           </>
         ) : (
           <>
             <Link className="button ghost" to="/login">
-              Đăng nhập
+              Dang nhap
             </Link>
             <Link className="button" to="/register">
-              Đăng ký
+              Dang ky
             </Link>
           </>
         )}

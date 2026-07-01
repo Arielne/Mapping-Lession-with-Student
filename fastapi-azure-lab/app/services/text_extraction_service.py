@@ -1,19 +1,8 @@
 from io import BytesIO
 from pathlib import Path
-from tempfile import NamedTemporaryFile
 
-import docx2txt
-import fitz
-
-try:
-    from docx import Document
-except ImportError:  # pragma: no cover - optional fallback
-    Document = None
-
-try:
-    from pypdf import PdfReader
-except ImportError:  # pragma: no cover - optional fallback
-    PdfReader = None
+from docx import Document
+from pypdf import PdfReader
 
 
 def extract_text(filename: str, content: bytes) -> tuple[str, str | None]:
@@ -29,29 +18,14 @@ def extract_text(filename: str, content: bytes) -> tuple[str, str | None]:
 
 
 def extract_pdf_text(content: bytes) -> str:
-    try:
-        with fitz.open(stream=content, filetype="pdf") as document:
-            return "\n".join(page.get_text("text") for page in document).strip()
-    except Exception:
-        if PdfReader is None:
-            raise
-        reader = PdfReader(BytesIO(content))
-        page_texts = []
-        for page in reader.pages:
-            page_texts.append(page.extract_text() or "")
-        return "\n".join(page_texts).strip()
+    reader = PdfReader(BytesIO(content))
+    page_texts = []
+    for page in reader.pages:
+        page_texts.append(page.extract_text() or "")
+    return "\n".join(page_texts).strip()
 
 
 def extract_docx_text(content: bytes) -> str:
-    try:
-        with NamedTemporaryFile(suffix=".docx", delete=True) as temp_file:
-            temp_file.write(content)
-            temp_file.flush()
-            return (docx2txt.process(temp_file.name) or "").strip()
-    except Exception:
-        if Document is None:
-            raise
-
     document = Document(BytesIO(content))
     parts = [paragraph.text for paragraph in document.paragraphs if paragraph.text]
 

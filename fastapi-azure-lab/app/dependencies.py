@@ -5,7 +5,7 @@ from app.database import get_database
 from app.security import decode_access_token
 from app.utils import to_object_id
 
-bearer_scheme = HTTPBearer()
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 def require_database():
@@ -19,9 +19,16 @@ def require_database():
 
 
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
     db=Depends(require_database),
 ):
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Thieu access token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     payload = decode_access_token(credentials.credentials)
     user_id = payload.get("sub")
     if not user_id:

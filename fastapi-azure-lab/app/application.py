@@ -13,6 +13,7 @@ from app.routers import (
     auth,
     courses,
     evaluation,
+    favorites,
     learning_needs,
     matching,
     recommendations,
@@ -62,6 +63,7 @@ app.include_router(admin_course_documents.router)
 app.include_router(student_documents.router)
 app.include_router(matching.router)
 app.include_router(evaluation.router)
+app.include_router(favorites.router)
 
 # Legacy form-based routes kept only for old technical tests.
 app.include_router(courses.router, include_in_schema=False)

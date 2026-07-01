@@ -43,6 +43,7 @@ export default function StudentDocumentsPage() {
   function formatPurpose(value) {
     if (value === "anonymized_cv") return "CV đã ẩn thông tin nhạy cảm";
     if (value === "learning_need") return "Nhu cầu học tập";
+    if (value === "profile_text") return "Mo ta ky nang / so thich";
     return value;
   }
 
