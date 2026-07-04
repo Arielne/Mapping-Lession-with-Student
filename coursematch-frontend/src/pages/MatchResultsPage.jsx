@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axiosClient, { getApiError } from "../api/axiosClient";
+import ScoreRing, { matchLevel, matchLevelLabel } from "../components/ScoreRing";
 
 export default function MatchResultsPage() {
   const { id } = useParams();
@@ -68,8 +69,15 @@ export default function MatchResultsPage() {
           <div className="match-list">
             {recommendations.map((item) => (
               <article className="match-item" key={item.course_document_id}>
-                <h2>#{item.rank} {item.course_title}</h2>
-                <p><strong>Mức độ phù hợp:</strong> {((item.score || item.match_score || 0) * 100).toFixed(2)}%</p>
+                <div className="match-item-head">
+                  <div>
+                    <h2>#{item.rank} {item.course_title}</h2>
+                    <span className={`level-badge level-${matchLevel((item.score || item.match_score || 0) * 100)}`}>
+                      {matchLevelLabel((item.score || item.match_score || 0) * 100)}
+                    </span>
+                  </div>
+                  <ScoreRing percent={(item.score || item.match_score || 0) * 100} />
+                </div>
                 <p><strong>Lý do gợi ý:</strong> {item.explanation || item.recommendation_reason}</p>
                 <div className="keyword-section">
                   <strong>Kỹ năng trùng:</strong>

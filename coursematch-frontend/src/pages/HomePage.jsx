@@ -1,22 +1,27 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ScoreRing from "../components/ScoreRing";
 
 export default function HomePage() {
   const { user } = useAuth();
 
   return (
     <main className="page hero-page">
-      <section className="hero">
-        <div>
-          <p className="eyebrow">CourseMatch</p>
-          <h1>Gợi ý khóa học phù hợp từ CV và nhu cầu học tập</h1>
+      <section className="hero-split">
+        <div className="hero-copy-col">
+          <p className="eyebrow">Matching bằng phân tích tài liệu</p>
+          <h1>
+            Một bản CV.
+            <br />
+            Đúng <em>khóa học</em> bạn cần.
+          </h1>
           <p className="hero-copy">
-            CourseMatch đọc CV hoặc hồ sơ nhu cầu học tập dạng PDF/DOCX, phân tích năng lực và mục tiêu của học viên để xếp hạng các khóa học phù hợp nhất.
+            Tải lên CV hoặc hồ sơ nhu cầu học tập (PDF/DOCX). CourseMatch phân tích năng lực và mục tiêu của bạn, rồi xếp hạng những khóa học phù hợp nhất — kèm lý do vì sao.
           </p>
           <div className="hero-actions">
             {(user?.role === "user" || user?.role === "student") && (
               <Link className="button" to="/student/documents/upload">
-                Upload CV / Nhu cầu học tập
+                Tải CV / Nhu cầu lên ngay
               </Link>
             )}
             {user?.role === "admin" && (
@@ -25,25 +30,51 @@ export default function HomePage() {
               </Link>
             )}
             {!user && (
-              <Link className="button secondary" to="/register">
-                Bắt đầu
-              </Link>
+              <>
+                <Link className="button" to="/register">
+                  Tải CV lên ngay
+                </Link>
+                <Link className="button ghost" to="/login">
+                  Đã có tài khoản? Đăng nhập →
+                </Link>
+              </>
             )}
           </div>
+          <div className="hero-proof">
+            <span>
+              <b>PDF · DOCX</b>
+              định dạng hỗ trợ
+            </span>
+            <span>
+              <b>Top 3</b>
+              gợi ý kèm lý do
+            </span>
+            <span>
+              <b>&lt; 30s</b>
+              từ upload đến kết quả
+            </span>
+          </div>
         </div>
-      </section>
-      <section className="feature-grid">
-        <div>
-          <h2>Cho học viên</h2>
-          <p>Upload CV ẩn danh hoặc hồ sơ mô tả kỹ năng hiện tại, mục tiêu nghề nghiệp và nội dung muốn học thêm.</p>
-        </div>
-        <div>
-          <h2>Cho admin</h2>
-          <p>Upload tài liệu khóa học thật có mục tiêu, nội dung học, kỹ năng đầu ra, đối tượng phù hợp và điều kiện đầu vào.</p>
-        </div>
-        <div>
-          <h2>Gợi ý minh bạch</h2>
-          <p>Hiển thị mức độ phù hợp, lý do gợi ý và các kỹ năng/nội dung liên quan được phát hiện từ hồ sơ học viên.</p>
+        <div className="hero-stage" aria-hidden="true">
+          <div className="stage-arch"></div>
+          <div className="stage-doc">
+            <span className="pg"></span>
+            <span>
+              CV_cua_ban.pdf
+              <small>Đã phân tích xong</small>
+            </span>
+          </div>
+          <div className="stage-line"></div>
+          <div className="stage-course">
+            <div className="cat">Khớp nhất cho bạn</div>
+            <h3>Lập trình Python nâng cao</h3>
+            <p>Khớp với kinh nghiệm và mục tiêu nghề nghiệp trong hồ sơ của bạn.</p>
+            <div className="rowx">
+              <span className="level-badge level-hi">Phù hợp cao</span>
+              <ScoreRing percent={91} size={44} />
+            </div>
+          </div>
+          <div className="stage-chip">+7 khóa học phù hợp khác</div>
         </div>
       </section>
     </main>
