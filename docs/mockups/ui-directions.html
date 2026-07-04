@@ -1,0 +1,568 @@
+<title>CourseMatch — 3 hướng UI</title>
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --ink: #23272f;
+    --ink-soft: #5b6472;
+    --line: #e3e1da;
+    --card: #ffffff;
+    --accent: #3555c8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#191b20; --ink:#e8e9ec; --ink-soft:#9aa1ad; --line:#32353d; --card:#22252c; --accent:#7d96ee; }
+  }
+  :root[data-theme="dark"] { --bg:#191b20; --ink:#e8e9ec; --ink-soft:#9aa1ad; --line:#32353d; --card:#22252c; --accent:#7d96ee; }
+  :root[data-theme="light"] { --bg:#f7f6f3; --ink:#23272f; --ink-soft:#5b6472; --line:#e3e1da; --card:#ffffff; --accent:#3555c8; }
+
+  body { background: var(--bg); color: var(--ink); font-family: "Segoe UI", system-ui, sans-serif; line-height: 1.55; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 48px 24px 80px; }
+  .wrap > header { max-width: 62ch; margin-bottom: 56px; }
+  h1 { font-size: 30px; margin: 0 0 12px; letter-spacing: -0.5px; text-wrap: balance; }
+  .lede { color: var(--ink-soft); margin: 0; font-size: 15.5px; }
+
+  section.direction { margin-bottom: 72px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  section.direction h2 { font-size: 22px; margin: 0 0 10px; letter-spacing: -0.3px; }
+  section.direction .desc { max-width: 68ch; color: var(--ink-soft); font-size: 14.5px; margin: 0 0 8px; }
+  .fit { font-size: 13.5px; margin: 0 0 20px; }
+  .fit b { color: var(--ink); }
+
+  .frame { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--card); box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .chrome { display: flex; gap: 6px; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+  .chrome span { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+  .viewport { overflow-x: auto; }
+  .screen { min-width: 860px; }
+  table { border-collapse: collapse; width: 100%; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ============ MOCKUP A — SaaS Dashboard ============ */
+  .mA { display: flex; background: #f2f5fa; color: #1c2434; font-size: 13px; }
+  .mA .side { width: 208px; flex: none; background: #17233b; color: #94a4c4; padding: 18px 14px; display: flex; flex-direction: column; gap: 4px; min-height: 480px; }
+  .mA .side .logo { color: #fff; font-weight: 800; font-size: 16px; padding: 4px 10px 16px; letter-spacing: -0.2px; }
+  .mA .side .logo em { color: #5b8ff0; font-style: normal; }
+  .mA .side .grp { font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; padding: 12px 10px 4px; color: #5d6d8f; }
+  .mA .side .it { padding: 8px 10px; border-radius: 7px; display: flex; align-items: center; gap: 9px; }
+  .mA .side .it svg { flex: none; }
+  .mA .side .it.on { background: #2450a8; color: #fff; }
+  .mA .side .me { margin-top: auto; border-top: 1px solid #2a3753; padding: 12px 10px 2px; display: flex; gap: 9px; align-items: center; }
+  .mA .side .me .av { width: 28px; height: 28px; border-radius: 50%; background: #5b8ff0; color: #fff; font-weight: 700; font-size: 12px; display: grid; place-items: center; }
+  .mA .side .me small { display: block; font-size: 10.5px; color: #5d6d8f; }
+  .mA .main { flex: 1; padding: 22px 26px; }
+  .mA .crumb { font-size: 11.5px; color: #7284a3; margin-bottom: 4px; }
+  .mA h3 { margin: 0 0 18px; font-size: 19px; color: #101828; }
+  .mA .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+  .mA .stat { background: #fff; border: 1px solid #e3e9f2; border-radius: 10px; padding: 14px 16px; }
+  .mA .stat .k { font-size: 11.5px; color: #7284a3; }
+  .mA .stat .v { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+  .mA .stat .d { font-size: 11px; color: #12855c; }
+  .mA .panel { background: #fff; border: 1px solid #e3e9f2; border-radius: 10px; overflow: hidden; }
+  .mA .panel .ph { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #edf1f7; }
+  .mA .panel .ph b { font-size: 13.5px; }
+  .mA .search { background: #f2f5fa; border: 1px solid #e3e9f2; border-radius: 7px; padding: 5px 12px; color: #7284a3; font-size: 12px; width: 200px; }
+  .mA th { text-align: left; font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; color: #7284a3; padding: 9px 16px; border-bottom: 1px solid #edf1f7; background: #fafbfd; }
+  .mA td { padding: 11px 16px; border-bottom: 1px solid #f1f4f9; }
+  .mA .bar { width: 110px; height: 6px; background: #edf1f7; border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 8px; }
+  .mA .bar i { display: block; height: 100%; border-radius: 3px; }
+  .mA .badge { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+  .mA .b-hi { background: #e2f5ec; color: #0f7a50; }
+  .mA .b-mid { background: #fdf3dd; color: #96660a; }
+  .mA .b-lo { background: #fdeaea; color: #b03434; }
+
+  /* ============ MOCKUP B — EdTech ============ */
+  .mB { background: #fffdf8; color: #2d2440; font-size: 13px; padding-bottom: 26px; }
+  .mB .nav { display: flex; align-items: center; gap: 22px; padding: 14px 28px; }
+  .mB .nav .logo { font-weight: 800; font-size: 17px; color: #6d3fc4; }
+  .mB .nav a { color: #6f6685; font-weight: 600; font-size: 12.5px; }
+  .mB .nav a.on { color: #6d3fc4; }
+  .mB .nav .cta { margin-left: auto; background: #6d3fc4; color: #fff; border-radius: 999px; padding: 7px 16px; font-weight: 700; font-size: 12px; }
+  .mB .hero { margin: 8px 28px 22px; background: linear-gradient(115deg, #6d3fc4, #9a5ce8 55%, #e8896b); border-radius: 20px; color: #fff; padding: 26px 30px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .mB .hero h3 { margin: 0 0 6px; font-size: 21px; letter-spacing: -0.3px; }
+  .mB .hero p { margin: 0; opacity: .85; font-size: 12.5px; max-width: 46ch; }
+  .mB .steps { display: flex; gap: 8px; align-items: center; flex: none; }
+  .mB .step { background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35); border-radius: 12px; padding: 9px 13px; font-size: 11.5px; font-weight: 600; text-align: center; }
+  .mB .step.done { background: rgba(255,255,255,.92); color: #6d3fc4; }
+  .mB .step small { display: block; font-weight: 400; opacity: .75; font-size: 10px; }
+  .mB .arrow { opacity: .6; }
+  .mB h4 { margin: 0 28px 12px; font-size: 15.5px; }
+  .mB .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 0 28px; }
+  .mB .course { background: #fff; border: 1px solid #efe8dc; border-radius: 18px; padding: 18px; box-shadow: 0 4px 14px rgba(109,63,196,.07); }
+  .mB .course .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .mB .course h5 { margin: 0 0 4px; font-size: 14px; }
+  .mB .course .cat { font-size: 10.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #b0621f; }
+  .mB .course p { margin: 0 0 12px; color: #6f6685; font-size: 11.8px; }
+  .mB .ring { position: relative; width: 54px; height: 54px; flex: none; }
+  .mB .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; }
+  .mB .tag { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+  .mB .t-hi { background: #e8f8ef; color: #14804a; }
+  .mB .t-mid { background: #fff3dc; color: #9a6410; }
+  .mB .go { display: inline-block; margin-left: 8px; color: #6d3fc4; font-weight: 700; font-size: 11.5px; }
+
+  /* ============ MOCKUP C — Minimal ============ */
+  .mC { background: #fcfcfb; color: #191919; font-size: 13px; min-height: 440px; }
+  .mC .nav { display: flex; align-items: baseline; gap: 26px; padding: 16px 32px; border-bottom: 1px solid #e9e8e4; }
+  .mC .nav .logo { font-weight: 700; font-size: 14.5px; }
+  .mC .nav a { color: #75726b; font-size: 12.5px; }
+  .mC .nav a.on { color: #191919; border-bottom: 2px solid #191919; padding-bottom: 14px; }
+  .mC .nav .me { margin-left: auto; color: #75726b; font-size: 12px; }
+  .mC .body { max-width: 720px; margin: 0 auto; padding: 30px 24px; }
+  .mC h3 { margin: 0 0 2px; font-size: 20px; font-weight: 650; letter-spacing: -0.4px; }
+  .mC .sub { color: #75726b; font-size: 12.5px; margin: 0 0 22px; }
+  .mC .toolrow { display: flex; gap: 10px; margin-bottom: 14px; }
+  .mC .toolrow .f { border: 1px solid #dddcd6; border-radius: 6px; padding: 5px 11px; font-size: 12px; color: #75726b; background: #fff; }
+  .mC .toolrow .f.on { border-color: #191919; color: #191919; font-weight: 600; }
+  .mC th { text-align: left; font-size: 11px; color: #75726b; font-weight: 500; padding: 7px 10px; border-bottom: 1px solid #e0dfd9; }
+  .mC td { padding: 11px 10px; border-bottom: 1px solid #eeede8; }
+  .mC .doc { font-weight: 600; }
+  .mC .doc small { display: block; font-weight: 400; color: #75726b; font-size: 11px; }
+  .mC .st { font-size: 11.5px; font-weight: 600; }
+  .mC .st::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+  .mC .ok { color: #1a7a4a; } .mC .ok::before { background: #1a7a4a; }
+  .mC .run { color: #9a6410; } .mC .run::before { background: #d99a1f; }
+  .mC .score { font-weight: 650; }
+  .mC .mini { display: inline-block; width: 56px; height: 4px; background: #e9e8e2; border-radius: 2px; margin-left: 8px; vertical-align: middle; }
+  .mC .mini i { display: block; height: 100%; background: #191919; border-radius: 2px; }
+  .mC .act { color: #1450b4; font-size: 12px; font-weight: 600; }
+
+  /* ============ MOCKUP D — Calm / paper-warm ============ */
+  .mD { position: relative; background: #f6f1e7; color: #2e2a24; font-size: 13px; min-height: 460px; }
+  .mD::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .mD .nav { display: flex; align-items: baseline; gap: 26px; padding: 18px 34px; border-bottom: 1px solid #e2d9c8; }
+  .mD .logo { font-family: Georgia, "Times New Roman", serif; font-size: 17px; font-weight: 600; letter-spacing: .2px; }
+  .mD .nav a { color: #7a7264; font-size: 12.5px; }
+  .mD .nav a.on { color: #2e2a24; border-bottom: 2px solid #b4552d; padding-bottom: 3px; }
+  .mD .nav .me { margin-left: auto; color: #7a7264; font-size: 12px; }
+  .mD .body { max-width: 700px; margin: 0 auto; padding: 34px 24px; position: relative; }
+  .mD .lbl { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #b4552d; margin: 0 0 6px; }
+  .mD h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 600; font-size: 24px; margin: 0 0 4px; letter-spacing: -0.2px; }
+  .mD .sub { color: #7a7264; font-size: 12.5px; margin: 0 0 26px; max-width: 52ch; }
+  .mD .row { display: flex; align-items: center; gap: 18px; padding: 15px 4px; border-bottom: 1px solid #e7dfd0; }
+  .mD .row .doc { flex: 1; }
+  .mD .row .doc b { font-weight: 600; }
+  .mD .row .doc small { display: block; color: #7a7264; font-size: 11px; margin-top: 2px; }
+  .mD .beads { display: flex; gap: 5px; align-items: center; }
+  .mD .beads i { width: 9px; height: 9px; border-radius: 50%; border: 1px solid #c9bda6; }
+  .mD .beads i.f { background: #2e2a24; border-color: #2e2a24; }
+  .mD .beads .pct { margin-left: 8px; font-size: 12px; font-variant-numeric: tabular-nums; color: #4c463c; }
+  .mD .stt { font-size: 11.5px; color: #7a7264; display: flex; align-items: center; gap: 7px; width: 96px; }
+  .mD .pulse { width: 8px; height: 8px; border-radius: 50%; background: #b4552d; animation: mdBreathe 8s ease-in-out infinite; }
+  @keyframes mdBreathe { 0%,100% { transform: scale(.7); opacity: .45; } 50% { transform: scale(1.15); opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .mD .pulse { animation: none; } }
+  .mD .done-dot { width: 8px; height: 8px; border-radius: 50%; background: #6b7a5a; }
+  .mD .cta { display: inline-block; margin-top: 24px; border: 1px solid #2e2a24; border-radius: 3px; padding: 9px 22px; font-size: 12.5px; font-weight: 600; background: transparent; }
+
+  /* ============ MOCKUP E — B + D kết hợp ============ */
+  .mE { position: relative; background: #f6f1e7; color: #2e2a24; font-size: 13px; }
+  .mE::after { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n2)'/%3E%3C/svg%3E"); }
+  .mE .nav { display: flex; align-items: center; gap: 24px; padding: 16px 32px; }
+  .mE .logo { font-family: Georgia, "Times New Roman", serif; font-size: 18px; font-weight: 600; }
+  .mE .nav a { color: #7a7264; font-size: 12.5px; font-weight: 600; }
+  .mE .nav a.on { color: #2e2a24; border-bottom: 2px solid #b4552d; padding-bottom: 3px; }
+  .mE .nav .right { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .mE .btn { display: inline-block; border: 1px solid #2e2a24; border-radius: 999px; padding: 7px 18px; font-size: 12px; font-weight: 600; }
+  .mE .btn.solid { background: #b4552d; border-color: #b4552d; color: #fdf9f0; }
+  .mE .ghosttxt { color: #7a7264; font-size: 12.5px; font-weight: 600; }
+  .mE .lbl { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #b4552d; margin: 0 0 8px; }
+  .mE h3 { font-family: Georgia, "Times New Roman", serif; font-weight: 600; letter-spacing: -0.2px; }
+
+  .mE .pub2 { position: relative; display: flex; align-items: center; gap: 30px; padding: 44px 52px 54px; overflow: hidden; min-height: 400px; }
+  .mE .pub2 .copy { flex: 1; max-width: 470px; position: relative; z-index: 2; }
+  .mE .pub2 h3 { font-size: 37px; margin: 0 0 16px; line-height: 1.14; text-wrap: balance; }
+  .mE .pub2 h3 em { font-style: italic; color: #b4552d; }
+  .mE .pub2 .sub { margin: 0 0 26px; color: #59523f; font-size: 14px; line-height: 1.65; max-width: 46ch; }
+  .mE .pub2 .proof { margin-top: 26px; display: flex; gap: 22px; color: #7a7264; font-size: 11.5px; }
+  .mE .pub2 .proof b { display: block; font-family: Georgia, serif; font-size: 19px; color: #2e2a24; font-weight: 600; letter-spacing: -0.3px; }
+  .mE .pub2 .stage { position: relative; flex: 1; min-height: 340px; z-index: 1; }
+  .mE .arch { position: absolute; right: 26px; top: 6px; width: 300px; height: 330px; background: linear-gradient(160deg, #eddfc4, #e9cfb4); border-radius: 150px 150px 18px 18px; border: 1px solid #e0cead; }
+  .mE .fl-doc { position: absolute; right: 232px; top: 52px; background: #fdfaf3; border: 1px solid #e7dcc6; border-radius: 12px; padding: 10px 14px; font-size: 11.5px; font-weight: 600; box-shadow: 0 10px 24px rgba(90,68,40,.13); display: flex; gap: 9px; align-items: center; }
+  .mE .fl-doc .pg { width: 26px; height: 32px; background: #f1e7d2; border: 1px solid #e0d2b8; border-radius: 4px; position: relative; flex: none; }
+  .mE .fl-doc .pg::after { content: ""; position: absolute; inset: 6px 5px; background: repeating-linear-gradient(#c9bda6 0 2px, transparent 2px 6px); }
+  .mE .fl-doc small { display: block; font-weight: 400; color: #7a7264; font-size: 10px; }
+  .mE .fl-course { position: absolute; right: 96px; top: 118px; width: 250px; background: #fdfaf3; border: 1px solid #e7dcc6; border-radius: 16px; padding: 16px; box-shadow: 0 18px 40px rgba(90,68,40,.18); }
+  .mE .fl-course .cat { font-size: 9.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #b4552d; }
+  .mE .fl-course h5 { font-family: Georgia, serif; margin: 3px 0 8px; font-size: 14px; font-weight: 600; }
+  .mE .fl-course .why { color: #7a7264; font-size: 10.8px; line-height: 1.5; margin: 0 0 10px; }
+  .mE .fl-course .rowx { display: flex; align-items: center; justify-content: space-between; }
+  .mE .fl-line { position: absolute; right: 210px; top: 100px; width: 70px; height: 46px; border-left: 1.5px dashed #c2a172; border-bottom: 1.5px dashed #c2a172; border-bottom-left-radius: 24px; }
+  .mE .fl-chip { position: absolute; right: 60px; top: 300px; background: #eef0e3; border: 1px solid #a8b494; color: #4c6138; border-radius: 999px; padding: 6px 13px; font-size: 10.5px; font-weight: 700; box-shadow: 0 8px 18px rgba(90,68,40,.12); }
+
+  .mE .stu-hero { position: relative; margin: 8px 32px 22px; background: linear-gradient(150deg, #efe4cf, #ecd9c9); border: 1px solid #e2d3ba; border-radius: 22px; padding: 24px 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+  .mE .stu-hero h3 { font-size: 20px; margin: 0 0 5px; }
+  .mE .stu-hero p { margin: 0; color: #59523f; font-size: 12.5px; max-width: 44ch; }
+  .mE .steps { display: flex; gap: 8px; align-items: center; flex: none; }
+  .mE .step { background: #fdfaf3; border: 1px solid #e0d2b8; border-radius: 12px; padding: 9px 14px; font-size: 11.5px; font-weight: 600; text-align: center; color: #7a7264; }
+  .mE .step.done { border-color: #6b7a5a; color: #2e2a24; }
+  .mE .step.done small { color: #6b7a5a; }
+  .mE .step small { display: block; font-weight: 400; font-size: 10px; margin-top: 1px; }
+  .mE .arrow { color: #b7a988; }
+  .mE h4 { font-family: Georgia, serif; margin: 0 32px 12px; font-size: 16px; font-weight: 600; }
+  .mE .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 0 32px; padding-bottom: 28px; }
+  .mE .course { position: relative; background: #fdfaf3; border: 1px solid #e7dcc6; border-radius: 18px; padding: 18px; }
+  .mE .course .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .mE .course .cat { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #b4552d; }
+  .mE .course h5 { font-family: Georgia, serif; margin: 2px 0 0; font-size: 14.5px; font-weight: 600; }
+  .mE .course p { margin: 0 0 12px; color: #7a7264; font-size: 11.8px; line-height: 1.55; }
+  .mE .ring { position: relative; width: 54px; height: 54px; flex: none; }
+  .mE .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 12.5px; }
+  .mE .tag { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 1px solid; }
+  .mE .t-hi { color: #4c6138; border-color: #a8b494; background: #eef0e3; }
+  .mE .t-mid { color: #8a6414; border-color: #d3bc85; background: #f6ecd4; }
+  .mE .go { margin-left: 8px; font-size: 11.5px; font-weight: 700; color: #2e2a24; }
+
+  .mE .adm { position: relative; padding: 22px 32px 30px; }
+  .mE .adm .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 16px 0 18px; }
+  .mE .adm .stat { background: #fdfaf3; border: 1px solid #e7dcc6; border-radius: 16px; padding: 14px 18px; }
+  .mE .adm .stat .k { font-size: 11.5px; color: #7a7264; }
+  .mE .adm .stat .v { font-family: Georgia, serif; font-size: 25px; font-weight: 600; letter-spacing: -0.5px; }
+  .mE .adm .stat .d { font-size: 11px; color: #4c6138; }
+  .mE .panel { background: #fdfaf3; border: 1px solid #e7dcc6; border-radius: 16px; overflow: hidden; }
+  .mE .panel .ph { padding: 12px 18px; border-bottom: 1px solid #efe5d0; font-weight: 700; font-size: 13px; }
+  .mE th { text-align: left; font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: #9a8f78; padding: 8px 18px; border-bottom: 1px solid #efe5d0; font-weight: 700; }
+  .mE td { padding: 11px 18px; border-bottom: 1px solid #f3ecdb; }
+  .mE .bar { width: 104px; height: 6px; background: #ece2cc; border-radius: 3px; display: inline-block; vertical-align: middle; margin-right: 8px; }
+  .mE .bar i { display: block; height: 100%; border-radius: 3px; }
+  .mE .badge { font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px; border: 1px solid; }
+
+  .subhead { font-size: 14px; font-weight: 700; margin: 26px 0 8px; }
+
+  .keepdrop { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 18px 0 24px; }
+  .keepdrop > div { border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; background: var(--card); }
+  .keepdrop h5 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+  .keepdrop .keep h5 { color: #1a7a4a; } .keepdrop .drop h5 { color: #b03434; }
+  .keepdrop ul { margin: 0; padding-left: 18px; font-size: 13.5px; color: var(--ink-soft); }
+  .keepdrop li { margin-bottom: 5px; }
+  @media (max-width: 640px) { .keepdrop { grid-template-columns: 1fr; } }
+
+  .verdict { margin-top: 64px; border-top: 1px solid var(--line); padding-top: 28px; max-width: 68ch; }
+  .verdict h2 { font-size: 18px; margin: 0 0 10px; }
+  .verdict p { color: var(--ink-soft); font-size: 14.5px; margin: 0 0 10px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">CourseMatch · Đề xuất UI</p>
+    <h1>Ba hướng giao diện để bạn chọn</h1>
+    <p class="lede">Mỗi mockup dưới đây dựng lại màn hình thật của app với dữ liệu mẫu — hướng A và C dùng trang admin, hướng B dùng trang gợi ý khóa học của student. Cuộn ngang trong khung nếu màn hình hẹp.</p>
+  </header>
+
+  <!-- ================= A ================= -->
+  <section class="direction">
+    <p class="eyebrow">Hướng A</p>
+    <h2>Dashboard có sidebar — kiểu SaaS quản trị</h2>
+    <p class="desc">Sidebar tối bên trái gom toàn bộ điều hướng theo vai trò; nội dung chính mở đầu bằng các thẻ số liệu rồi mới đến bảng chi tiết. Trạng thái và điểm match được mã hóa bằng màu + thanh tiến độ để quét nhanh.</p>
+    <p class="fit"><b>Hợp khi:</b> người dùng chính là admin, thao tác dữ liệu nhiều. <b>Đánh đổi:</b> phía student hơi "hành chính".</p>
+    <div class="frame">
+      <div class="chrome"><span></span><span></span><span></span></div>
+      <div class="viewport"><div class="screen mA">
+        <div class="side">
+          <div class="logo">Course<em>Match</em></div>
+          <div class="grp">Quản trị</div>
+          <div class="it"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>Tổng quan</div>
+          <div class="it"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M3 1h7l3 3v11H3z"/></svg>Tài liệu khóa học</div>
+          <div class="it on"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><path d="M1 14h3V7H1zM6 14h3V2H6zM11 14h3V5h-3z"/></svg>Đánh giá matching</div>
+          <div class="grp">Tài khoản</div>
+          <div class="it"><svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 3-4.5 6-4.5s6 1.5 6 4.5z"/></svg>Hồ sơ</div>
+          <div class="me"><div class="av">AD</div><div>Admin Preview<small>admin@coursematch.vn</small></div></div>
+        </div>
+        <div class="main">
+          <div class="crumb">Quản trị / Đánh giá matching</div>
+          <h3>Đánh giá matching</h3>
+          <div class="stats">
+            <div class="stat"><div class="k">Tài liệu khóa học</div><div class="v num">128</div><div class="d">+12 tuần này</div></div>
+            <div class="stat"><div class="k">Lượt matching</div><div class="v num">342</div><div class="d">+38 tuần này</div></div>
+            <div class="stat"><div class="k">Điểm match trung bình</div><div class="v num">72%</div><div class="d">+3% so với tuần trước</div></div>
+          </div>
+          <div class="panel">
+            <div class="ph"><b>Kết quả gần đây</b><span class="search">Tìm theo sinh viên, khóa học…</span></div>
+            <table>
+              <tr><th>Sinh viên</th><th>Tài liệu</th><th>Khóa học khớp nhất</th><th>Điểm</th><th>Mức độ</th></tr>
+              <tr><td>Nguyễn Văn Minh</td><td>CV_Minh_2026.pdf</td><td>Lập trình Python nâng cao</td><td class="num"><span class="bar"><i style="width:91%;background:#12855c"></i></span>91%</td><td><span class="badge b-hi">Cao</span></td></tr>
+              <tr><td>Trần Thị Hà</td><td>NhuCau_DataScience.docx</td><td>Nhập môn Machine Learning</td><td class="num"><span class="bar"><i style="width:76%;background:#12855c"></i></span>76%</td><td><span class="badge b-hi">Cao</span></td></tr>
+              <tr><td>Lê Quốc Bảo</td><td>CV_Bao_IT.pdf</td><td>Thiết kế cơ sở dữ liệu</td><td class="num"><span class="bar"><i style="width:58%;background:#d99a1f"></i></span>58%</td><td><span class="badge b-mid">Trung bình</span></td></tr>
+              <tr><td>Phạm Thu Trang</td><td>NhuCau_Marketing.pdf</td><td>Digital Marketing cơ bản</td><td class="num"><span class="bar"><i style="width:34%;background:#c94f4f"></i></span>34%</td><td><span class="badge b-lo">Thấp</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ================= B ================= -->
+  <section class="direction">
+    <p class="eyebrow">Hướng B</p>
+    <h2>EdTech thân thiện — hướng về sinh viên</h2>
+    <p class="desc">Navbar nhẹ, khối hero gradient nêu rõ quy trình 3 bước, và kết quả matching trình bày thành thẻ khóa học với vòng tròn phần trăm — màn hình "ăn tiền" của app được đặt làm trung tâm.</p>
+    <p class="fit"><b>Hợp khi:</b> student là đối tượng chính, muốn app gần gũi, dễ dùng. <b>Đánh đổi:</b> phía admin cần dựng thêm phong cách bảng biểu riêng.</p>
+    <div class="frame">
+      <div class="chrome"><span></span><span></span><span></span></div>
+      <div class="viewport"><div class="screen mB">
+        <div class="nav">
+          <span class="logo">CourseMatch</span>
+          <a>Upload CV / Nhu cầu</a><a class="on">Gợi ý cho tôi</a><a>Hồ sơ của tôi</a>
+          <span class="cta">Nguyễn Văn Minh</span>
+        </div>
+        <div class="hero">
+          <div>
+            <h3>Chào Minh, hồ sơ của bạn đã sẵn sàng!</h3>
+            <p>Hệ thống đã phân tích CV_Minh_2026.pdf và tìm thấy 8 khóa học phù hợp với định hướng của bạn.</p>
+          </div>
+          <div class="steps">
+            <div class="step done">1. Upload<small>Hoàn tất</small></div><span class="arrow">→</span>
+            <div class="step done">2. Matching<small>Hoàn tất</small></div><span class="arrow">→</span>
+            <div class="step">3. Đăng ký<small>Chọn khóa học</small></div>
+          </div>
+        </div>
+        <h4>Khóa học phù hợp nhất với bạn</h4>
+        <div class="cards">
+          <div class="course">
+            <div class="top">
+              <div><div class="cat">Lập trình</div><h5>Lập trình Python nâng cao</h5></div>
+              <div class="ring"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="23" fill="none" stroke="#f0e9dd" stroke-width="6"/><circle cx="27" cy="27" r="23" fill="none" stroke="#14804a" stroke-width="6" stroke-linecap="round" stroke-dasharray="131.5 144.5" transform="rotate(-90 27 27)"/></svg><b class="num">91%</b></div>
+            </div>
+            <p>Khớp với kinh nghiệm 2 năm Python và mục tiêu backend trong CV của bạn.</p>
+            <span class="tag t-hi">Phù hợp cao</span><span class="go">Xem chi tiết →</span>
+          </div>
+          <div class="course">
+            <div class="top">
+              <div><div class="cat">Dữ liệu</div><h5>Nhập môn Machine Learning</h5></div>
+              <div class="ring"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="23" fill="none" stroke="#f0e9dd" stroke-width="6"/><circle cx="27" cy="27" r="23" fill="none" stroke="#14804a" stroke-width="6" stroke-linecap="round" stroke-dasharray="109.8 144.5" transform="rotate(-90 27 27)"/></svg><b class="num">76%</b></div>
+            </div>
+            <p>Phù hợp với nhu cầu "chuyển hướng data" bạn ghi trong tài liệu nhu cầu.</p>
+            <span class="tag t-hi">Phù hợp cao</span><span class="go">Xem chi tiết →</span>
+          </div>
+          <div class="course">
+            <div class="top">
+              <div><div class="cat">Cơ sở dữ liệu</div><h5>Thiết kế cơ sở dữ liệu</h5></div>
+              <div class="ring"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="23" fill="none" stroke="#f0e9dd" stroke-width="6"/><circle cx="27" cy="27" r="23" fill="none" stroke="#d99a1f" stroke-width="6" stroke-linecap="round" stroke-dasharray="83.8 144.5" transform="rotate(-90 27 27)"/></svg><b class="num">58%</b></div>
+            </div>
+            <p>Bổ trợ tốt cho kỹ năng backend, tuy chưa nằm trong mục tiêu chính.</p>
+            <span class="tag t-mid">Trung bình</span><span class="go">Xem chi tiết →</span>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ================= C ================= -->
+  <section class="direction">
+    <p class="eyebrow">Hướng C</p>
+    <h2>Tối giản document-centric — kiểu Notion / Linear</h2>
+    <p class="desc">Gần như đơn sắc, typography và khoảng trắng làm việc chính; nội dung gói trong một cột hẹp dễ đọc, trạng thái chỉ là chấm màu + chữ, điểm match là con số kèm thanh mảnh. Ít CSS nhất, dễ bảo trì nhất.</p>
+    <p class="fit"><b>Hợp khi:</b> muốn sạch, nhanh, tập trung vào dữ liệu. <b>Đánh đổi:</b> ít "wow", khó gây ấn tượng khi demo.</p>
+    <div class="frame">
+      <div class="chrome"><span></span><span></span><span></span></div>
+      <div class="viewport"><div class="screen mC">
+        <div class="nav">
+          <span class="logo">CourseMatch</span>
+          <a class="on">Tài liệu khóa học</a><a>Đánh giá</a>
+          <span class="me">Admin Preview · Đăng xuất</span>
+        </div>
+        <div class="body">
+          <h3>Tài liệu khóa học</h3>
+          <p class="sub">128 tài liệu · cập nhật lần cuối 2 giờ trước</p>
+          <div class="toolrow"><span class="f on">Tất cả</span><span class="f">PDF</span><span class="f">DOCX</span><span class="f">Đang xử lý</span></div>
+          <table>
+            <tr><th>Tài liệu</th><th>Trạng thái</th><th>Match TB</th><th></th></tr>
+            <tr><td class="doc">Python_NangCao_GiaoTrinh.pdf<small>2.4 MB · tải lên 12/06/2026</small></td><td><span class="st ok">Đã xử lý</span></td><td class="num score">91%<span class="mini"><i style="width:91%"></i></span></td><td class="act">Xem matching</td></tr>
+            <tr><td class="doc">MachineLearning_CoBan.docx<small>1.1 MB · tải lên 10/06/2026</small></td><td><span class="st ok">Đã xử lý</span></td><td class="num score">76%<span class="mini"><i style="width:76%"></i></span></td><td class="act">Xem matching</td></tr>
+            <tr><td class="doc">ThietKe_CSDL_2026.pdf<small>3.8 MB · tải lên 09/06/2026</small></td><td><span class="st run">Đang xử lý</span></td><td class="num score">—</td><td class="act">Chi tiết</td></tr>
+            <tr><td class="doc">DigitalMarketing_CB.pdf<small>0.9 MB · tải lên 05/06/2026</small></td><td><span class="st ok">Đã xử lý</span></td><td class="num score">34%<span class="mini"><i style="width:34%"></i></span></td><td class="act">Xem matching</td></tr>
+          </table>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ================= D ================= -->
+  <section class="direction">
+    <p class="eyebrow">Hướng D · Chuyển thể từ prompt bạn gửi</p>
+    <h2>"Calm / paper-warm" — nền giấy kem, serif ấm, terracotta tiết chế</h2>
+    <p class="desc">Prompt gốc viết cho landing page yoga studio, nhưng phần <b>triết lý</b> của nó chuyển thể được: nền kem có vân giấy thay cho xám "nhựa", tiêu đề serif ấm, một màu accent duy nhất xuất hiện đúng vài chỗ, và điểm match hiển thị bằng chuỗi chấm (bead) thay cho progress bar kiểu dashboard. Chấm màu terracotta "thở" chậm 8 giây được tái dụng làm trạng thái <i>Đang xử lý</i> — chỗ duy nhất chuyển động liên tục có lý do tồn tại trong một app dữ liệu.</p>
+    <div class="keepdrop">
+      <div class="keep">
+        <h5>Giữ được cho CourseMatch</h5>
+        <ul>
+          <li>Một accent duy nhất, dùng đúng ~4 chỗ (nhãn mục, gạch chân nav, trạng thái, hover nút)</li>
+          <li>Nền trung tính ấm có vân giấy nhẹ thay vì trắng/xám mặc định</li>
+          <li>Serif ấm cho tiêu đề, sans cho dữ liệu</li>
+          <li>Copy cụ thể, không chung chung ("128 tài liệu · cập nhật 2 giờ trước" thay vì "Chào mừng đến với hệ thống")</li>
+          <li>Click thay vì hover cho mở rộng chi tiết (thân thiện màn hình cảm ứng)</li>
+        </ul>
+      </div>
+      <div class="drop">
+        <h5>Nên bỏ, không hợp app dữ liệu</h5>
+        <ul>
+          <li>Nhịp thở 8 giây trên hero, Ken Burns zoom — app công cụ cần phản hồi tức thì, không cần "thiền"</li>
+          <li>Âm chuông A4+E5 — người dùng mở app để làm việc, âm thanh gây phiền</li>
+          <li>Quote gõ chữ 28ms/ký tự — làm chậm việc đọc dữ liệu thật</li>
+          <li>Chấm bead thay bar <b>chỉ nên dùng ở phía student</b>; bảng admin nhiều dòng vẫn cần bar/badge để so sánh nhanh</li>
+        </ul>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="chrome"><span></span><span></span><span></span></div>
+      <div class="viewport"><div class="screen mD">
+        <div class="nav">
+          <span class="logo">CourseMatch</span>
+          <a>Upload CV / Nhu cầu</a><a class="on">Hồ sơ của tôi</a>
+          <span class="me">Nguyễn Văn Minh · Đăng xuất</span>
+        </div>
+        <div class="body">
+          <p class="lbl">Hồ sơ của tôi</p>
+          <h3>Ba tài liệu, tám khóa học phù hợp</h3>
+          <p class="sub">Tài liệu mới nhất được phân tích lúc 14:20 hôm nay. Nhấn vào một dòng để xem các khóa học khớp với tài liệu đó.</p>
+          <div class="row">
+            <div class="doc"><b>CV_Minh_2026.pdf</b><small>2.4 MB · tải lên 12/06/2026 · khớp nhất: Lập trình Python nâng cao</small></div>
+            <span class="beads"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><span class="pct">91%</span></span>
+            <span class="stt"><span class="done-dot"></span>Hoàn tất</span>
+          </div>
+          <div class="row">
+            <div class="doc"><b>NhuCau_DataScience.docx</b><small>1.1 MB · tải lên 10/06/2026 · khớp nhất: Nhập môn Machine Learning</small></div>
+            <span class="beads"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i><i></i><span class="pct">76%</span></span>
+            <span class="stt"><span class="done-dot"></span>Hoàn tất</span>
+          </div>
+          <div class="row">
+            <div class="doc"><b>NhuCau_Backend_2026.pdf</b><small>0.8 MB · tải lên hôm nay · đang trích xuất nội dung</small></div>
+            <span class="beads"><i></i><i></i><i></i><i></i><i></i><span class="pct">—</span></span>
+            <span class="stt"><span class="pulse"></span>Đang xử lý</span>
+          </div>
+          <span class="cta">Tải lên tài liệu mới</span>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <!-- ================= E: B + D ================= -->
+  <section class="direction">
+    <p class="eyebrow">Kết hợp B + D</p>
+    <h2>"Warm EdTech" — cấu trúc của B, chất liệu của D</h2>
+    <p class="desc">Lấy của B: hero chào mừng, stepper 3 bước, thẻ khóa học với vòng tròn %. Lấy của D: nền giấy kem có vân, tiêu đề serif, một accent terracotta dùng tiết chế (nhãn mục, gạch chân nav, nút chính). Màu ngữ nghĩa tách riêng: xanh ô liu = phù hợp cao, hổ phách = trung bình — không giành chỗ với accent. Ba màn hình dưới đây phủ đủ ba trạng thái người dùng của app.</p>
+
+    <p class="subhead">1 · Trang chủ — khách chưa đăng nhập</p>
+    <div class="frame">
+      <div class="chrome"><span></span><span></span><span></span></div>
+      <div class="viewport"><div class="screen mE">
+        <div class="nav">
+          <span class="logo">CourseMatch</span>
+          <div class="right"><span class="ghosttxt">Đăng nhập</span><span class="btn solid">Đăng ký</span></div>
+        </div>
+        <div class="pub2">
+          <div class="copy">
+            <p class="lbl">Matching bằng phân tích tài liệu</p>
+            <h3>Một bản CV.<br>Đúng <em>khóa học</em> bạn cần.</h3>
+            <p class="sub">Tải lên CV hoặc hồ sơ nhu cầu học tập (PDF/DOCX). CourseMatch phân tích năng lực và mục tiêu của bạn, rồi xếp hạng những khóa học phù hợp nhất — kèm lý do vì sao.</p>
+            <span class="btn solid">Tải CV lên ngay</span><span class="ghosttxt" style="margin-left:14px">Đã có tài khoản? Đăng nhập →</span>
+            <div class="proof">
+              <span><b class="num">128</b>tài liệu khóa học</span>
+              <span><b class="num">342</b>lượt matching đã chạy</span>
+              <span><b class="num">&lt; 30s</b>từ upload đến kết quả</span>
+            </div>
+          </div>
+          <div class="stage">
+            <div class="arch"></div>
+            <div class="fl-doc"><span class="pg"></span><span>CV_Minh_2026.pdf<small>Đã phân tích xong</small></span></div>
+            <div class="fl-line"></div>
+            <div class="fl-course">
+              <div class="cat">Khớp nhất cho bạn</div>
+              <h5>Lập trình Python nâng cao</h5>
+              <p class="why">Khớp với kinh nghiệm 2 năm Python và mục tiêu backend trong CV.</p>
+              <div class="rowx">
+                <span class="tag t-hi">Phù hợp cao</span>
+                <div class="ring" style="width:44px;height:44px"><svg width="44" height="44" viewBox="0 0 54 54"><circle cx="27" cy="27" r="23" fill="none" stroke="#ece2cc" stroke-width="6"/><circle cx="27" cy="27" r="23" fill="none" stroke="#6b7a5a" stroke-width="6" stroke-linecap="round" stroke-dasharray="131.5 144.5" transform="rotate(-90 27 27)"/></svg><b class="num" style="font-size:11px">91%</b></div>
+              </div>
+            </div>
+            <div class="fl-chip">+7 khóa học phù hợp khác</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <p class="subhead">2 · Trang gợi ý — học viên đã đăng nhập</p>
+    <div class="frame">
+      <div class="chrome"><span></span><span></span><span></span></div>
+      <div class="viewport"><div class="screen mE">
+        <div class="nav">
+          <span class="logo">CourseMatch</span>
+          <a>Upload CV / Nhu cầu</a><a class="on">Gợi ý cho tôi</a><a>Hồ sơ của tôi</a>
+          <div class="right"><span class="ghosttxt">Nguyễn Văn Minh · Đăng xuất</span></div>
+        </div>
+        <div class="stu-hero">
+          <div>
+            <h3>Chào Minh, hồ sơ của bạn đã sẵn sàng</h3>
+            <p>Hệ thống đã phân tích CV_Minh_2026.pdf và tìm thấy 8 khóa học phù hợp với định hướng của bạn.</p>
+          </div>
+          <div class="steps">
+            <div class="step done">1. Upload<small>Hoàn tất</small></div><span class="arrow">→</span>
+            <div class="step done">2. Matching<small>Hoàn tất</small></div><span class="arrow">→</span>
+            <div class="step">3. Đăng ký<small>Chọn khóa học</small></div>
+          </div>
+        </div>
+        <h4>Khóa học phù hợp nhất với bạn</h4>
+        <div class="cards">
+          <div class="course">
+            <div class="top">
+              <div><div class="cat">Lập trình</div><h5>Lập trình Python nâng cao</h5></div>
+              <div class="ring"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="23" fill="none" stroke="#ece2cc" stroke-width="6"/><circle cx="27" cy="27" r="23" fill="none" stroke="#6b7a5a" stroke-width="6" stroke-linecap="round" stroke-dasharray="131.5 144.5" transform="rotate(-90 27 27)"/></svg><b class="num">91%</b></div>
+            </div>
+            <p>Khớp với kinh nghiệm 2 năm Python và mục tiêu backend trong CV của bạn.</p>
+            <span class="tag t-hi">Phù hợp cao</span><span class="go">Xem chi tiết →</span>
+          </div>
+          <div class="course">
+            <div class="top">
+              <div><div class="cat">Dữ liệu</div><h5>Nhập môn Machine Learning</h5></div>
+              <div class="ring"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="23" fill="none" stroke="#ece2cc" stroke-width="6"/><circle cx="27" cy="27" r="23" fill="none" stroke="#6b7a5a" stroke-width="6" stroke-linecap="round" stroke-dasharray="109.8 144.5" transform="rotate(-90 27 27)"/></svg><b class="num">76%</b></div>
+            </div>
+            <p>Phù hợp với nhu cầu "chuyển hướng data" bạn ghi trong tài liệu nhu cầu.</p>
+            <span class="tag t-hi">Phù hợp cao</span><span class="go">Xem chi tiết →</span>
+          </div>
+          <div class="course">
+            <div class="top">
+              <div><div class="cat">Cơ sở dữ liệu</div><h5>Thiết kế cơ sở dữ liệu</h5></div>
+              <div class="ring"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="23" fill="none" stroke="#ece2cc" stroke-width="6"/><circle cx="27" cy="27" r="23" fill="none" stroke="#c99a3f" stroke-width="6" stroke-linecap="round" stroke-dasharray="83.8 144.5" transform="rotate(-90 27 27)"/></svg><b class="num">58%</b></div>
+            </div>
+            <p>Bổ trợ tốt cho kỹ năng backend, tuy chưa nằm trong mục tiêu chính.</p>
+            <span class="tag t-mid">Trung bình</span><span class="go">Xem chi tiết →</span>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <p class="subhead">3 · Trang đánh giá — admin</p>
+    <div class="frame">
+      <div class="chrome"><span></span><span></span><span></span></div>
+      <div class="viewport"><div class="screen mE">
+        <div class="nav">
+          <span class="logo">CourseMatch</span>
+          <a>Tài liệu khóa học</a><a class="on">Đánh giá</a>
+          <div class="right"><span class="ghosttxt">Admin Preview · Đăng xuất</span></div>
+        </div>
+        <div class="adm">
+          <p class="lbl">Quản trị</p>
+          <h3 style="font-size:22px;margin:0">Đánh giá matching</h3>
+          <div class="stats">
+            <div class="stat"><div class="k">Tài liệu khóa học</div><div class="v num">128</div><div class="d">+12 tuần này</div></div>
+            <div class="stat"><div class="k">Lượt matching</div><div class="v num">342</div><div class="d">+38 tuần này</div></div>
+            <div class="stat"><div class="k">Điểm match trung bình</div><div class="v num">72%</div><div class="d">+3% so với tuần trước</div></div>
+          </div>
+          <div class="panel">
+            <div class="ph">Kết quả gần đây</div>
+            <table>
+              <tr><th>Sinh viên</th><th>Tài liệu</th><th>Khóa học khớp nhất</th><th>Điểm</th><th>Mức độ</th></tr>
+              <tr><td>Nguyễn Văn Minh</td><td>CV_Minh_2026.pdf</td><td>Lập trình Python nâng cao</td><td class="num"><span class="bar"><i style="width:91%;background:#6b7a5a"></i></span>91%</td><td><span class="badge t-hi">Cao</span></td></tr>
+              <tr><td>Trần Thị Hà</td><td>NhuCau_DataScience.docx</td><td>Nhập môn Machine Learning</td><td class="num"><span class="bar"><i style="width:76%;background:#6b7a5a"></i></span>76%</td><td><span class="badge t-hi">Cao</span></td></tr>
+              <tr><td>Lê Quốc Bảo</td><td>CV_Bao_IT.pdf</td><td>Thiết kế cơ sở dữ liệu</td><td class="num"><span class="bar"><i style="width:58%;background:#c99a3f"></i></span>58%</td><td><span class="badge t-mid">Trung bình</span></td></tr>
+              <tr><td>Phạm Thu Trang</td><td>NhuCau_Marketing.pdf</td><td>Digital Marketing cơ bản</td><td class="num"><span class="bar"><i style="width:34%;background:#b4552d"></i></span>34%</td><td><span class="badge" style="color:#96422a;border-color:#d3a08a;background:#f6e3d8">Thấp</span></td></tr>
+            </table>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </section>
+
+  <div class="verdict">
+    <h2>Gợi ý của tôi</h2>
+    <p>Nếu phải chọn một: <b>hướng A cho phần admin, kết hợp thẻ khóa học kiểu hướng B cho trang gợi ý của student</b>. App có hai vai trò với nhu cầu khác nhau — admin cần quét bảng số liệu nhanh, student cần thấy kết quả matching hấp dẫn — nên trộn hai hướng theo vai trò là hợp lý nhất, và cả hai vẫn dùng chung một bảng màu để app thống nhất.</p>
+    <p>Hướng C phù hợp nếu bạn ưu tiên tốc độ hoàn thành và độ dễ bảo trì hơn ấn tượng thị giác.</p>
+  </div>
+</div>
