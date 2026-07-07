@@ -17,6 +17,8 @@ class Settings:
     allowed_origins: str | None = os.getenv("ALLOWED_ORIGINS")
     max_upload_size_mb: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))
     matching_max_features: int = int(os.getenv("MATCHING_MAX_FEATURES", "500"))
+    login_rate_limit_attempts: int = int(os.getenv("LOGIN_RATE_LIMIT_ATTEMPTS", "5"))
+    login_rate_limit_window_seconds: int = int(os.getenv("LOGIN_RATE_LIMIT_WINDOW_SECONDS", "300"))
 
     @property
     def is_production(self) -> bool:

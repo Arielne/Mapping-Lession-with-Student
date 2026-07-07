@@ -1,9 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pymongo.errors import DuplicateKeyError
 
 from app.dependencies import get_current_user, require_database
 from app.schemas.auth import TokenResponse, UserLogin, UserRegister, UserResponse
 from app.security import create_access_token, hash_password, verify_password
+from app.services.login_rate_limit_service import (
+    ensure_login_allowed,
+    record_failed_login,
+    reset_login_attempts,
+)
 from app.utils import now_utc, serialize_document
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -32,11 +37,14 @@ async def register(payload: UserRegister, db=Depends(require_database)):
 
 
 @router.post("/login", response_model=TokenResponse)
-async def login(payload: UserLogin, db=Depends(require_database)):
+async def login(payload: UserLogin, request: Request, db=Depends(require_database)):
+    ensure_login_allowed(payload.email, request)
     user = await db.users.find_one({"email": payload.email.lower()})
     if user is None or not verify_password(payload.password, user["password_hash"]):
+        record_failed_login(payload.email, request)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Email hoac password khong dung.")
 
+    reset_login_attempts(payload.email, request)
     user_response = serialize_document(user)
     token = create_access_token(user_response["id"])
     return {"access_token": token, "token_type": "bearer", "user": user_response}
