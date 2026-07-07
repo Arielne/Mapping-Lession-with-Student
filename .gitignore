@@ -1,6 +1,17 @@
 .env
 .env.*
 !.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.publishsettings
+*.pubxml
+*secret*
+*credential*
+*token*
 .venv/
 __pycache__/
 *.pyc
