@@ -87,3 +87,20 @@ def get_database():
 
 def get_database_status() -> dict:
     return database_status
+
+
+def get_public_database_status() -> dict:
+    configured = bool(database_status.get("configured"))
+    connected = bool(database_status.get("connected"))
+    if connected:
+        status = "connected"
+    elif configured:
+        status = "unavailable"
+    else:
+        status = "not_configured"
+
+    return {
+        "configured": configured,
+        "connected": connected,
+        "status": status,
+    }

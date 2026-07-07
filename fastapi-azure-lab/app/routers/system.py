@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from app.config import settings
-from app.database import get_database_status
+from app.database import get_public_database_status
 
 router = APIRouter(prefix="/api", tags=["System"])
 
@@ -17,4 +17,4 @@ async def status():
 
 @router.get("/health")
 async def health():
-    return {"api": "Online", "database": get_database_status()}
+    return {"api": "Online", "database": get_public_database_status()}
