@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import certifi
 from pymongo import ASCENDING, AsyncMongoClient
 from pymongo.errors import PyMongoError
