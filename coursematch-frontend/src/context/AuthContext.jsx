@@ -42,6 +42,17 @@ export function AuthProvider({ children }) {
     };
   }, [token]);
 
+  useEffect(() => {
+    function handleAuthExpired() {
+      localStorage.removeItem(TOKEN_KEY);
+      setToken(null);
+      setUser(null);
+    }
+
+    window.addEventListener("coursematch:auth-expired", handleAuthExpired);
+    return () => window.removeEventListener("coursematch:auth-expired", handleAuthExpired);
+  }, []);
+
   async function login(email, password) {
     const response = await axiosClient.post("/auth/login", { email, password });
     localStorage.setItem(TOKEN_KEY, response.data.access_token);

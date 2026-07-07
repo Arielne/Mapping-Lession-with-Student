@@ -3,11 +3,11 @@ from fastapi import APIRouter
 from app.config import settings
 from app.database import get_database_status
 
-router = APIRouter(tags=["System"])
+router = APIRouter(prefix="/api", tags=["System"])
 
 
-@router.get("/")
-async def root():
+@router.get("/status")
+async def status():
     return {
         "app": settings.app_name,
         "status": "Online",

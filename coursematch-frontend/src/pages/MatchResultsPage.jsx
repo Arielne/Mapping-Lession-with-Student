@@ -1,14 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import axiosClient, { getApiError } from "../api/axiosClient";
 
 const MIN_VISIBLE_SCORE = 0.75;
+
+const text = {
+  eyebrow: "G\u1ee3i \u00fd kh\u00f3a h\u1ecdc",
+  title: "M\u00f4n h\u1ecdc ph\u00f9 h\u1ee3p v\u1edbi b\u1ea1n",
+  back: "Quay l\u1ea1i h\u1ed3 s\u01a1",
+  create: "T\u1ea1o g\u1ee3i \u00fd",
+  creating: "\u0110ang ph\u00e2n t\u00edch...",
+  emptyTitle: "Ch\u01b0a c\u00f3 m\u00f4n h\u1ecdc \u0111\u1ea1t m\u1ee9c ph\u00f9 h\u1ee3p 75%",
+  emptyDesc: "H\u00e3y b\u1ed5 sung th\u00eam k\u1ef9 n\u0103ng, s\u1edf th\u00edch ho\u1eb7c m\u1ee5c ti\u00eau h\u1ecdc t\u1eadp \u0111\u1ec3 h\u1ec7 th\u1ed1ng g\u1ee3i \u00fd ch\u00ednh x\u00e1c h\u01a1n.",
+  noResult: "Ch\u01b0a c\u00f3 k\u1ebft qu\u1ea3. H\u00e3y b\u1ea5m T\u1ea1o g\u1ee3i \u00fd sau khi c\u00f3 CV ho\u1eb7c h\u1ed3 s\u01a1 nhu c\u1ea7u h\u1ecdc t\u1eadp.",
+  saved: "\u0110\u00e3 th\u00eam kh\u00f3a h\u1ecdc v\u00e0o danh s\u00e1ch y\u00eau th\u00edch.",
+  removed: "\u0110\u00e3 b\u1ecf kh\u00f3a h\u1ecdc kh\u1ecfi danh s\u00e1ch y\u00eau th\u00edch.",
+  generated: "\u0110\u00e3 t\u1ea1o danh s\u00e1ch g\u1ee3i \u00fd kh\u00f3a h\u1ecdc ph\u00f9 h\u1ee3p.",
+  results: "k\u1ebft qu\u1ea3",
+};
 
 export default function MatchResultsPage() {
   const { id } = useParams();
   const [result, setResult] = useState(null);
   const [favorites, setFavorites] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("all");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [running, setRunning] = useState(false);
@@ -44,7 +58,7 @@ export default function MatchResultsPage() {
     try {
       const response = await axiosClient.post(`/matching/student-documents/${id}`, null, { params: { top_k: 8 } });
       setResult(response.data);
-      setMessage("Da tao danh sach goi y khoa hoc phu hop.");
+      setMessage(text.generated);
       await loadFavorites();
     } catch (err) {
       setError(getApiError(err));
@@ -62,7 +76,7 @@ export default function MatchResultsPage() {
   }
 
   function shortDescription(item) {
-    return item.course_summary || item.text_preview || item.recommendation_reason || item.explanation || "Mon hoc nay phu hop voi ho so ky nang va muc tieu hoc tap cua ban.";
+    return item.course_summary || item.text_preview || item.recommendation_reason || item.explanation || "M\u00f4n h\u1ecdc n\u00e0y ph\u00f9 h\u1ee3p v\u1edbi h\u1ed3 s\u01a1 k\u1ef9 n\u0103ng v\u00e0 m\u1ee5c ti\u00eau h\u1ecdc t\u1eadp c\u1ee7a b\u1ea1n.";
   }
 
   function favoriteFor(courseDocumentId) {
@@ -77,7 +91,7 @@ export default function MatchResultsPage() {
       if (existing) {
         await axiosClient.delete(`/student/favorites/${existing.id}`);
         setFavorites((current) => current.filter((favorite) => favorite.id !== existing.id));
-        setMessage("Da bo khoa hoc khoi danh sach yeu thich.");
+        setMessage(text.removed);
       } else {
         const response = await axiosClient.post("/student/favorites", {
           course_document_id: item.course_document_id,
@@ -85,7 +99,7 @@ export default function MatchResultsPage() {
           match_score: displayScore(item),
         });
         setFavorites((current) => [response.data, ...current]);
-        setMessage("Da them khoa hoc vao danh sach yeu thich.");
+        setMessage(text.saved);
       }
     } catch (err) {
       setError(getApiError(err));
@@ -94,106 +108,56 @@ export default function MatchResultsPage() {
 
   const recommendations = result?.recommendations?.length ? result.recommendations : result?.results || [];
   const visibleRecommendations = recommendations.filter((item) => displayScore(item) >= MIN_VISIBLE_SCORE);
-  const filters = useMemo(() => {
-    const skillCounts = new Map();
-    visibleRecommendations.forEach((item) => {
-      (item.matched_keywords || item.relevant_skills || []).forEach((skill) => {
-        skillCounts.set(skill, (skillCounts.get(skill) || 0) + 1);
-      });
-    });
-    return ["all", ...Array.from(skillCounts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([skill]) => skill)];
-  }, [visibleRecommendations]);
-
-  const filteredRecommendations = activeFilter === "all"
-    ? visibleRecommendations
-    : visibleRecommendations.filter((item) => (item.matched_keywords || item.relevant_skills || []).includes(activeFilter));
 
   return (
     <main className="page course-browser-page">
-      <div className="course-toolbar">
-        <div className="filter-icon" aria-hidden="true">⌯</div>
-        <div className="filter-pills">
-          {filters.map((filter) => (
-            <button
-              className={activeFilter === filter ? "filter-pill active" : "filter-pill"}
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter === "all" ? "Tat ca" : filter}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="page-heading">
+      <div className="page-heading match-heading-clean">
         <div>
-          <p className="eyebrow">Goi y khoa hoc</p>
-          <h1>Mon hoc phu hop voi ban</h1>
+          <p className="eyebrow">{text.eyebrow}</p>
+          <h1>{text.title}</h1>
         </div>
         <div className="heading-actions">
-          <strong className="result-count">{filteredRecommendations.length} ket qua</strong>
+          <Link className="button secondary" to="/student/documents">{text.back}</Link>
+          <strong className="result-count">{visibleRecommendations.length} {text.results}</strong>
           <button className="button" type="button" onClick={runMatching} disabled={running}>
-            {running ? "Dang phan tich..." : "Tao goi y"}
+            {running ? text.creating : text.create}
           </button>
         </div>
       </div>
 
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
-      {!result && <p>Chua co ket qua. Hay bam Tao goi y sau khi co CV hoac ho so ky nang/so thich.</p>}
+      {!result && <p>{text.noResult}</p>}
 
       {result && (
         <>
           {visibleRecommendations.length === 0 && (
             <section className="empty-state">
-              <h2>Chua co mon hoc dat muc phu hop 75%</h2>
-              <p>Hay bo sung them ky nang, so thich hoac muc tieu hoc tap de he thong goi y chinh xac hon.</p>
+              <h2>{text.emptyTitle}</h2>
+              <p>{text.emptyDesc}</p>
             </section>
           )}
           <div className="match-list-view">
-            {filteredRecommendations.map((item) => {
+            {visibleRecommendations.map((item) => {
               const isFavorite = Boolean(favoriteFor(item.course_document_id));
-              const skills = item.matched_keywords?.length ? item.matched_keywords : item.relevant_skills || [];
-              const missing = item.missing_keywords?.length ? item.missing_keywords : item.suggested_learning_outcomes || [];
               return (
                 <article className="match-row" key={item.course_document_id}>
                   <div className="match-row-main">
                     <div className="match-row-header">
-                      <span className="category-chip">{skills[0] || "Mon hoc phu hop"}</span>
-                      <strong>{formatScore(displayScore(item))} phu hop</strong>
+                      <strong>{formatScore(displayScore(item))} ph\u00f9 h\u1ee3p</strong>
                     </div>
                     <h2>{item.course_title}</h2>
                     <p>{shortDescription(item)}</p>
-                    <div className="subject-tags">
-                      {skills.slice(0, 4).map((skill) => <span key={skill}>{skill}</span>)}
-                      {skills.length > 4 && <span>+{skills.length - 4}</span>}
-                    </div>
                   </div>
                   <div className="match-row-actions">
                     <button
                       className={isFavorite ? "heart-button active" : "heart-button"}
                       type="button"
                       onClick={() => toggleFavorite(item)}
-                      title={isFavorite ? "Bo yeu thich" : "Them vao yeu thich"}
+                      title={isFavorite ? "B\u1ecf y\u00eau th\u00edch" : "Th\u00eam v\u00e0o y\u00eau th\u00edch"}
                     >
-                      {isFavorite ? "♥" : "♡"}
+                      {isFavorite ? "\u2665" : "\u2661"}
                     </button>
-                  </div>
-                  <h2>{item.course_title}</h2>
-                  <p className="course-meta">#{item.rank} • {item.algorithm || item.algorithm_name}</p>
-                  <p>{item.explanation || item.recommendation_reason}</p>
-                  <div className="subject-tags">
-                    {skills.slice(0, 3).map((skill) => <span key={skill}>{skill}</span>)}
-                    {skills.length > 3 && <span>+{skills.length - 3}</span>}
-                  </div>
-                  <div className="subject-card-footer">
-                    <span>★ {formatScore(item.similarity_score ?? item.score ?? item.match_score)}</span>
-                    <details>
-                      <summary>Xem chi tiet ›</summary>
-                      <p><strong>Ky nang nen hoc them:</strong> {missing.length ? missing.slice(0, 8).join(", ") : "Khong co de xuat bo sung"}</p>
-                      <p><strong>Tu khoa lien quan:</strong> {item.matched_terms?.length ? item.matched_terms.join(", ") : "Khong co"}</p>
-                    </details>
                   </div>
                 </article>
               );

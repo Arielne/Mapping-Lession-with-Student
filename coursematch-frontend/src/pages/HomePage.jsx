@@ -1,77 +1,80 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import ScoreRing from "../components/ScoreRing";
 
 export default function HomePage() {
   const { user } = useAuth();
 
   return (
-    <main className="home-shell">
-      <section className="home-hero">
-        <div className="home-hero-content">
-          <p className="eyebrow">CourseMatch</p>
-          <h1>Tim mon hoc phu hop voi ban</h1>
-          <p>
-            He thong giup sinh vien kham pha nhung mon hoc phu hop voi ky nang,
-            so thich va muc tieu hoc tap cua minh.
+    <main className="page hero-page">
+      <section className="hero-split">
+        <div className="hero-copy-col">
+          <p className="eyebrow">Matching bằng phân tích tài liệu</p>
+          <h1>
+            Một bản CV.
+            <br />
+            Đúng <em>khóa học</em> bạn cần.
+          </h1>
+          <p className="hero-copy">
+            Tải lên CV hoặc hồ sơ nhu cầu học tập (PDF/DOCX). CourseMatch phân tích năng lực và mục tiêu của bạn, rồi xếp hạng những khóa học phù hợp nhất — kèm lý do vì sao.
           </p>
           <div className="hero-actions">
             {(user?.role === "user" || user?.role === "student") && (
               <Link className="button" to="/student/documents/upload">
-                Tim khoa hoc phu hop
+                Tải CV / Nhu cầu lên ngay
               </Link>
             )}
             {user?.role === "admin" && (
               <Link className="button" to="/admin/course-documents">
-                Quan ly mon hoc
+                Quản lý tài liệu khóa học
               </Link>
             )}
             {!user && (
               <>
-                <Link className="button" to="/login">
-                  Dang nhap
+                <Link className="button" to="/register">
+                  Tải CV lên ngay
                 </Link>
-                <Link className="button secondary" to="/register">
-                  Tao tai khoan
+                <Link className="button ghost" to="/login">
+                  Đã có tài khoản? Đăng nhập →
                 </Link>
               </>
             )}
           </div>
-        </div>
-
-        <div className="home-preview" aria-label="Minh hoa goi y mon hoc">
-          <div className="preview-card primary">
-            <span>Phu hop nhat</span>
-            <h2>Data Analytics</h2>
-            <p>Python · SQL · Dashboard</p>
-          </div>
-          <div className="preview-card">
-            <span>Da luu</span>
-            <h2>UI/UX Design</h2>
-            <p>Research · Wireframe</p>
-          </div>
-          <div className="preview-card">
-            <span>Goi y</span>
-            <h2>AI Foundation</h2>
-            <p>Machine Learning · Python</p>
+          <div className="hero-proof">
+            <span>
+              <b>PDF · DOCX</b>
+              định dạng hỗ trợ
+            </span>
+            <span>
+              <b>Top 3</b>
+              gợi ý kèm lý do
+            </span>
+            <span>
+              <b>&lt; 30s</b>
+              từ upload đến kết quả
+            </span>
           </div>
         </div>
-      </section>
-
-      <section className="home-feature-row" aria-label="Quy trinh CourseMatch">
-        <div>
-          <strong>01</strong>
-          <h2>Nhap ho so</h2>
-          <p>Upload CV hoac mo ta ky nang, so thich va muc tieu hoc tap.</p>
-        </div>
-        <div>
-          <strong>02</strong>
-          <h2>So khop mon hoc</h2>
-          <p>He thong doi chieu voi tai lieu mon hoc do nha truong cap nhat.</p>
-        </div>
-        <div>
-          <strong>03</strong>
-          <h2>Luu mon phu hop</h2>
-          <p>Danh dau nhung mon ban quan tam de xem lai khi can chon mon.</p>
+        <div className="hero-stage" aria-hidden="true">
+          <div className="stage-arch"></div>
+          <div className="stage-doc">
+            <span className="pg"></span>
+            <span>
+              CV_cua_ban.pdf
+              <small>Đã phân tích xong</small>
+            </span>
+          </div>
+          <div className="stage-line"></div>
+          <div className="stage-course">
+            <div className="cat">Khớp nhất cho bạn</div>
+            <h3>Lập trình Python nâng cao</h3>
+            <p>Khớp với kinh nghiệm và mục tiêu nghề nghiệp trong hồ sơ của bạn.</p>
+            <div className="rowx">
+              <span className="level-badge level-hi">Phù hợp cao</span>
+              <ScoreRing percent={91} size={44} />
+            </div>
+          </div>
+          <div className="stage-chip">+7 khóa học phù hợp khác</div>
         </div>
       </section>
     </main>

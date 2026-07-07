@@ -159,7 +159,11 @@ def compute_binary_jaccard_ngram_matches(student_text: str, course_documents: li
         if current is None or item["score"] > current["score"]:
             grouped[group_key] = item
 
-    results = sorted(grouped.values(), key=lambda item: item["score"], reverse=True)[:top_k]
+    results = sorted(
+        grouped.values(),
+        key=lambda item: (len(item["matched_keywords"]), item["match_score"], item["score"]),
+        reverse=True,
+    )[:top_k]
     ranked_results = [{**item, "rank": rank} for rank, item in enumerate(results, start=1)]
     return {
         "algorithm_name": ALGORITHM_NAME,

@@ -14,9 +14,9 @@ export default function Navbar() {
       <nav className="nav-links">
         {isStudent && <NavLink to="/student/documents/upload">Upload CV / Nhu cau</NavLink>}
         {isStudent && <NavLink to="/student/documents">Ho so cua toi</NavLink>}
+        {isStudent && <NavLink to="/student/courses">Tim khoa hoc</NavLink>}
         {isStudent && <NavLink to="/student/favorites">Yeu thich</NavLink>}
         {isAdmin && <NavLink to="/admin/course-documents">Tai lieu khoa hoc</NavLink>}
-        {isAdmin && <NavLink to="/admin/evaluation">Danh gia</NavLink>}
       </nav>
       <div className="nav-actions">
         {user ? (

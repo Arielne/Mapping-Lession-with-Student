@@ -11,7 +11,7 @@ class Settings:
     mongodb_db_name: str = os.getenv("MONGODB_DB_NAME") or os.getenv("DB_NAME", "coursematch_document_db")
     jwt_secret_key: str | None = os.getenv("JWT_SECRET_KEY")
     jwt_algorithm: str = os.getenv("JWT_ALGORITHM") or os.getenv("ALGORITHM", "HS256")
-    access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "60"))
+    access_token_expire_minutes: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "480"))
     frontend_url: str | None = os.getenv("FRONTEND_URL")
     allowed_origins: str | None = os.getenv("ALLOWED_ORIGINS")
     max_upload_size_mb: int = int(os.getenv("MAX_UPLOAD_SIZE_MB", "10"))

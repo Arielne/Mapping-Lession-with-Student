@@ -1,4 +1,4 @@
-from contextlib import asynccontextmanager
+﻿from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -10,6 +10,7 @@ from app.config import settings
 from app.database import close_mongo_connection, connect_to_mongo, get_database_status
 from app.routers import (
     admin_course_documents,
+    course_documents_public,
     auth,
     courses,
     evaluation,
@@ -61,6 +62,7 @@ app.include_router(system.router)
 app.include_router(auth.router)
 app.include_router(admin_course_documents.router)
 app.include_router(student_documents.router)
+app.include_router(course_documents_public.router)
 app.include_router(matching.router)
 app.include_router(evaluation.router)
 app.include_router(favorites.router)
@@ -72,7 +74,16 @@ app.include_router(recommendations.router, include_in_schema=False)
 app.include_router(registrations.router, include_in_schema=False)
 
 
-frontend_dist = Path(__file__).resolve().parent / "frontend_dist"
+frontend_candidates = [
+    Path(__file__).resolve().parent / "frontend_dist",
+    Path.cwd() / "app" / "frontend_dist",
+    Path("/home/site/wwwroot/app/frontend_dist"),
+    Path("/tmp/coursematch/app/frontend_dist"),
+]
+frontend_dist = next(
+    (candidate for candidate in frontend_candidates if (candidate / "index.html").exists()),
+    frontend_candidates[0],
+)
 frontend_assets = frontend_dist / "assets"
 frontend_index = frontend_dist / "index.html"
 
@@ -89,3 +100,4 @@ async def serve_frontend(full_path: str):
         "status": "Online",
         "workflow": "document_upload_binary_gridfs_matching",
     }
+

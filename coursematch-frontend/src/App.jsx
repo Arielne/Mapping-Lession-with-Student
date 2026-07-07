@@ -9,8 +9,8 @@ import AdminCourseDocumentsPage from "./pages/AdminCourseDocumentsPage";
 import StudentUploadPage from "./pages/StudentUploadPage";
 import StudentDocumentsPage from "./pages/StudentDocumentsPage";
 import MatchResultsPage from "./pages/MatchResultsPage";
-import AdminEvaluationPage from "./pages/AdminEvaluationPage";
 import FavoritesPage from "./pages/FavoritesPage";
+import CourseSearchPage from "./pages/CourseSearchPage";
 
 export default function App() {
   return (
@@ -23,12 +23,13 @@ export default function App() {
         <Route element={<ProtectedRoute role="user" />}>
           <Route path="/student/documents/upload" element={<StudentUploadPage />} />
           <Route path="/student/documents" element={<StudentDocumentsPage />} />
+          <Route path="/student/courses" element={<CourseSearchPage />} />
           <Route path="/student/documents/:id/matches" element={<MatchResultsPage />} />
           <Route path="/student/favorites" element={<FavoritesPage />} />
         </Route>
         <Route element={<AdminRoute />}>
           <Route path="/admin/course-documents" element={<AdminCourseDocumentsPage />} />
-          <Route path="/admin/evaluation" element={<AdminEvaluationPage />} />
+          <Route path="/admin/evaluation" element={<Navigate to="/admin/course-documents" replace />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
