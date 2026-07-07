@@ -78,7 +78,10 @@ async def _run_matching_for_document(
     try:
         match_data = build_matches(student_document["normalized_text"], course_documents, top_k)
     except ValueError as exc:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Khong tao duoc vocabulary matching: {exc}")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Khong tao duoc du lieu matching tu cac tai lieu da trich xuat.",
+        ) from exc
 
     top1_correct, hit_at_3 = calculate_ground_truth_metrics(
         match_data["results"],

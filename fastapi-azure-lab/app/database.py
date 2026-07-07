@@ -41,13 +41,13 @@ async def connect_to_mongo() -> None:
             "connected": True,
             "message": "MongoDB da ket noi.",
         }
-    except PyMongoError as exc:
+    except PyMongoError:
         client = None
         db = None
         database_status = {
             "configured": True,
             "connected": False,
-            "message": f"Khong ket noi duoc MongoDB: {exc}",
+            "message": "Khong ket noi duoc MongoDB.",
         }
 
 
