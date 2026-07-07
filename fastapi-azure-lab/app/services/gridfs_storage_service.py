@@ -1,7 +1,23 @@
 from __future__ import annotations
 
+from pathlib import Path
+from urllib.parse import quote
+
 from bson import ObjectId
 from gridfs import AsyncGridFSBucket
+
+
+def safe_download_filename(filename: str | None) -> str:
+    raw_name = Path(filename or "document").name
+    clean_name = "".join(char if char.isalnum() or char in "._- " else "_" for char in raw_name).strip()
+    return clean_name or "document"
+
+
+def attachment_content_disposition(filename: str | None) -> str:
+    safe_name = safe_download_filename(filename)
+    ascii_name = safe_name.encode("ascii", "ignore").decode("ascii") or "document"
+    encoded_name = quote(safe_name)
+    return f'attachment; filename="{ascii_name}"; filename*=UTF-8\'\'{encoded_name}'
 
 
 async def save_file_to_gridfs(

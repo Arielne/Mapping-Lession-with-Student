@@ -10,8 +10,8 @@ from app.schemas.student_document import (
     StudentDocumentListItem,
     StudentProfileTextCreate,
 )
-from app.services.file_validation_service import validate_upload
-from app.services.gridfs_storage_service import read_file_from_gridfs, save_file_to_gridfs
+from app.services.file_validation_service import read_and_validate_upload
+from app.services.gridfs_storage_service import attachment_content_disposition, read_file_from_gridfs, save_file_to_gridfs
 from app.services.text_extraction_service import extract_text
 from app.services.text_normalization_service import extract_skills, normalize_text, preview_text
 from app.utils import now_utc, serialize_document, to_object_id
@@ -62,8 +62,7 @@ async def upload_student_document(
             detail="Ban phai xac nhan file duoc phep su dung va da an thong tin nhay cam neu can.",
         )
 
-    content = await file.read()
-    validate_upload(file, content)
+    content = await read_and_validate_upload(file)
     gridfs_file_id = await save_file_to_gridfs(
         db,
         file.filename or "uploaded-student-document",
@@ -185,7 +184,7 @@ async def download_student_document(document_id: str, db=Depends(require_databas
     return Response(
         content,
         media_type=content_type,
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": attachment_content_disposition(filename)},
     )
 
 

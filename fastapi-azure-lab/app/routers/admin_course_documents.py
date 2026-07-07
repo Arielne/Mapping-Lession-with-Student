@@ -5,8 +5,8 @@ from fastapi.responses import Response
 
 from app.dependencies import require_admin, require_database
 from app.schemas.course_document import CourseDocumentDetail, CourseDocumentListItem, CourseDocumentUpdate
-from app.services.file_validation_service import validate_upload
-from app.services.gridfs_storage_service import read_file_from_gridfs, save_file_to_gridfs
+from app.services.file_validation_service import read_and_validate_upload
+from app.services.gridfs_storage_service import attachment_content_disposition, read_file_from_gridfs, save_file_to_gridfs
 from app.services.text_extraction_service import extract_text
 from app.services.text_normalization_service import extract_skills, normalize_text, preview_text
 from app.utils import now_utc, serialize_document, serialize_documents, to_object_id
@@ -48,8 +48,7 @@ async def upload_course_document(
     db=Depends(require_database),
     current_admin=Depends(require_admin),
 ):
-    content = await file.read()
-    validate_upload(file, content)
+    content = await read_and_validate_upload(file)
 
     gridfs_file_id = await save_file_to_gridfs(
         db,
@@ -118,7 +117,7 @@ async def download_course_document(document_id: str, db=Depends(require_database
     return Response(
         content,
         media_type=content_type,
-        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        headers={"Content-Disposition": attachment_content_disposition(filename)},
     )
 
 
